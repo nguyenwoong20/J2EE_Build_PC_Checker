@@ -9,7 +9,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/identity_service
     username: root
-    password: 123456
+    password: 0937673915
   jpa:
     hibernate:
       ddl-auto: update
@@ -32,8 +32,24 @@ spring:
 
 app:
   base-url: http://localhost:8080/identity  # URL base của ứng dụng
+  openapi:
+    dev-url: http://localhost:8080
 
 jwt:
   signerKey: "ef251fc07ebf85497bf3b3e3c558386a22756bacb907d9e08d345bfe269ede05"
   valid-duration: 300 # in seconds
   refreshable-duration: 1200 # seconds
+
+springdoc:
+  api-docs:
+    path: /api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    operations-sorter: method
+    tags-sorter: alpha
+    try-it-out-enabled: true
+    filter: true
+    display-request-duration: true
+  show-actuator: false

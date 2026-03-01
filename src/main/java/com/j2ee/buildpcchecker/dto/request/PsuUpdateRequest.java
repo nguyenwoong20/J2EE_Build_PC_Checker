@@ -3,6 +3,8 @@ package com.j2ee.buildpcchecker.dto.request;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Set;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,7 +15,7 @@ public class PsuUpdateRequest {
     String name;
     Integer wattage;
     String efficiency;
-    String pcieConnectorId;
+    Set<String> pcieConnectorIds;
     Integer sataConnector;
     String description;
 }

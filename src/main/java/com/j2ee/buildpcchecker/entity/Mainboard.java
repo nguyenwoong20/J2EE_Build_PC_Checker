@@ -44,8 +44,9 @@ public class Mainboard {
     @Column(name = "ram_max_capacity", nullable = false)
     Integer ramMaxCapacity;
 
-    @Column(nullable = false)
-    String size;
+    @ManyToOne
+    @JoinColumn(name = "size_id", nullable = false)
+    CaseSize size;
 
     @ManyToOne
     @JoinColumn(name = "pcie_vga_version_id", nullable = false)

@@ -19,7 +19,7 @@ public class MainboardResponse {
     Integer ramBusMax;
     Integer ramSlot;
     Integer ramMaxCapacity;
-    String size;
+    CaseSizeResponse size;
     PcieVersionResponse pcieVgaVersion;
     Integer m2Slot;
     Integer sataSlot;

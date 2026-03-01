@@ -24,7 +24,7 @@ public class VgaCreationRequest {
     @NotBlank(message = "VGA_PCIE_VERSION_ID_REQUIRED")
     String pcieVersionId;
 
-    String powerConnector;
+    String powerConnectorId; // Optional: 6pin, 8pin, 12VHPWR, etc.
 
     @NotNull(message = "VGA_SCORE_REQUIRED")
     Integer score;

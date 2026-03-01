@@ -37,7 +37,7 @@ public class MainboardCreationRequest {
     Integer ramMaxCapacity;
 
     @NotBlank(message = "MAINBOARD_SIZE_REQUIRED")
-    String size;
+    String sizeId;
 
     @NotBlank(message = "MAINBOARD_PCIE_VGA_VERSION_ID_REQUIRED")
     String pcieVgaVersionId;

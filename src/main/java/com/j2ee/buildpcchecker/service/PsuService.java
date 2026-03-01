@@ -15,7 +15,9 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -43,14 +45,18 @@ public class PsuService {
 
         Psu psu = psuMapper.toPsu(request);
 
-        // Get PcieConnector if provided
-        if (request.getPcieConnectorId() != null) {
-            PcieConnector pcieConnector = pcieConnectorRepository.findById(request.getPcieConnectorId())
-                    .orElseThrow(() -> {
-                        log.error("PCIe Connector not found with ID: {}", request.getPcieConnectorId());
-                        return new AppException(ErrorCode.PCIE_CONNECTOR_NOT_FOUND);
-                    });
-            psu.setPcieConnector(pcieConnector);
+        // Get PcieConnectors if provided
+        if (request.getPcieConnectorIds() != null && !request.getPcieConnectorIds().isEmpty()) {
+            Set<PcieConnector> pcieConnectors = new HashSet<>();
+            for (String connectorId : request.getPcieConnectorIds()) {
+                PcieConnector connector = pcieConnectorRepository.findById(connectorId)
+                        .orElseThrow(() -> {
+                            log.error("PCIe Connector not found with ID: {}", connectorId);
+                            return new AppException(ErrorCode.PCIE_CONNECTOR_NOT_FOUND);
+                        });
+                pcieConnectors.add(connector);
+            }
+            psu.setPcieConnectors(pcieConnectors);
         }
 
         Psu savedPsu = psuRepository.save(psu);
@@ -103,14 +109,18 @@ public class PsuService {
 
         psuMapper.updatePsu(psu, request);
 
-        // Update PcieConnector if provided
-        if (request.getPcieConnectorId() != null) {
-            PcieConnector pcieConnector = pcieConnectorRepository.findById(request.getPcieConnectorId())
-                    .orElseThrow(() -> {
-                        log.error("PCIe Connector not found with ID: {}", request.getPcieConnectorId());
-                        return new AppException(ErrorCode.PCIE_CONNECTOR_NOT_FOUND);
-                    });
-            psu.setPcieConnector(pcieConnector);
+        // Update PcieConnectors if provided
+        if (request.getPcieConnectorIds() != null && !request.getPcieConnectorIds().isEmpty()) {
+            Set<PcieConnector> pcieConnectors = new HashSet<>();
+            for (String connectorId : request.getPcieConnectorIds()) {
+                PcieConnector connector = pcieConnectorRepository.findById(connectorId)
+                        .orElseThrow(() -> {
+                            log.error("PCIe Connector not found with ID: {}", connectorId);
+                            return new AppException(ErrorCode.PCIE_CONNECTOR_NOT_FOUND);
+                        });
+                pcieConnectors.add(connector);
+            }
+            psu.setPcieConnectors(pcieConnectors);
         }
 
         Psu updatedPsu = psuRepository.save(psu);

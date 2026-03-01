@@ -16,6 +16,7 @@ public interface MainboardMapper {
     @Mapping(target = "socket", ignore = true)
     @Mapping(target = "ramType", ignore = true)
     @Mapping(target = "pcieVgaVersion", ignore = true)
+    @Mapping(target = "size", ignore = true)
     Mainboard toMainboard(MainboardCreationRequest request);
 
     MainboardResponse toMainboardResponse(Mainboard mainboard);
@@ -25,6 +26,7 @@ public interface MainboardMapper {
     @Mapping(target = "socket", ignore = true)
     @Mapping(target = "ramType", ignore = true)
     @Mapping(target = "pcieVgaVersion", ignore = true)
+    @Mapping(target = "size", ignore = true)
     void updateMainboard(@MappingTarget Mainboard mainboard, MainboardUpdateRequest request);
 }
 

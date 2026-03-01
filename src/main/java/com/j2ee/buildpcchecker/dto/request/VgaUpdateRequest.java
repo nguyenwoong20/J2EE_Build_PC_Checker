@@ -14,7 +14,7 @@ public class VgaUpdateRequest {
     Integer lengthMm;
     Integer tdp;
     String pcieVersionId;
-    String powerConnector;
+    String powerConnectorId;
     Integer score;
     String description;
 }

@@ -15,6 +15,7 @@ public interface VgaMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "pcieVersion", ignore = true)
+    @Mapping(target = "powerConnector", ignore = true)
     Vga toVga(VgaCreationRequest request);
 
     VgaResponse toVgaResponse(Vga vga);
@@ -23,6 +24,7 @@ public interface VgaMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "pcieVersion", ignore = true)
+    @Mapping(target = "powerConnector", ignore = true)
     void updateVga(@MappingTarget Vga vga, VgaUpdateRequest request);
 }
 

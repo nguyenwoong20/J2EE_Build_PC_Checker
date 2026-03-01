@@ -31,8 +31,9 @@ public class Vga {
     @JoinColumn(name = "pcie_version_id", nullable = false)
     PcieVersion pcieVersion;
 
-    @Column(name = "power_connector")
-    String powerConnector;
+    @ManyToOne
+    @JoinColumn(name = "power_connector_id")
+    PcieConnector powerConnector;
 
     @Column(nullable = false)
     Integer score;

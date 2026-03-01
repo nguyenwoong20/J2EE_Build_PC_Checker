@@ -15,7 +15,7 @@ public class VgaResponse {
     Integer lengthMm;
     Integer tdp;
     PcieVersionResponse pcieVersion;
-    String powerConnector;
+    PcieConnectorResponse powerConnector;
     Integer score;
     String description;
 }

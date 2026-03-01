@@ -3,6 +3,8 @@ package com.j2ee.buildpcchecker.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Set;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -14,7 +16,7 @@ public class PsuResponse {
     String name;
     Integer wattage;
     String efficiency;
-    PcieConnectorResponse pcieConnector;
+    Set<PcieConnectorResponse> pcieConnectors;
     Integer sataConnector;
     String description;
 }

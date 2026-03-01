@@ -13,7 +13,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface PsuMapper {
 
-    @Mapping(target = "pcieConnector", ignore = true) // Will be set manually in service
+    @Mapping(target = "pcieConnectors", ignore = true) // Will be set manually in service
     @Mapping(target = "id", ignore = true)
     Psu toPsu(PsuCreationRequest request);
 
@@ -21,7 +21,7 @@ public interface PsuMapper {
 
     List<PsuResponse> toListPsuResponse(List<Psu> psus);
     
-    @Mapping(target = "pcieConnector", ignore = true) // Will be set manually in service if needed
+    @Mapping(target = "pcieConnectors", ignore = true) // Will be set manually in service if needed
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "name", ignore = true)
     void updatePsu(@MappingTarget Psu psu, PsuUpdateRequest request);

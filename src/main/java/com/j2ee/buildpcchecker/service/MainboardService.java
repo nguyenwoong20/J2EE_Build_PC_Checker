@@ -3,6 +3,7 @@ package com.j2ee.buildpcchecker.service;
 import com.j2ee.buildpcchecker.dto.request.MainboardCreationRequest;
 import com.j2ee.buildpcchecker.dto.request.MainboardUpdateRequest;
 import com.j2ee.buildpcchecker.dto.response.MainboardResponse;
+import com.j2ee.buildpcchecker.entity.CaseSize;
 import com.j2ee.buildpcchecker.entity.Mainboard;
 import com.j2ee.buildpcchecker.entity.PcieVersion;
 import com.j2ee.buildpcchecker.entity.RamType;
@@ -10,6 +11,7 @@ import com.j2ee.buildpcchecker.entity.Socket;
 import com.j2ee.buildpcchecker.exception.AppException;
 import com.j2ee.buildpcchecker.exception.ErrorCode;
 import com.j2ee.buildpcchecker.mapper.MainboardMapper;
+import com.j2ee.buildpcchecker.repository.CaseSizeRepository;
 import com.j2ee.buildpcchecker.repository.MainboardRepository;
 import com.j2ee.buildpcchecker.repository.PcieVersionRepository;
 import com.j2ee.buildpcchecker.repository.RamTypeRepository;
@@ -32,6 +34,7 @@ public class MainboardService {
     SocketRepository socketRepository;
     RamTypeRepository ramTypeRepository;
     PcieVersionRepository pcieVersionRepository;
+    CaseSizeRepository caseSizeRepository;
 
     /**
      * Create a new Mainboard
@@ -68,10 +71,18 @@ public class MainboardService {
                     return new RuntimeException("PCIe Version not found with id: " + request.getPcieVgaVersionId());
                 });
 
+        // Get CaseSize
+        CaseSize size = caseSizeRepository.findById(request.getSizeId())
+                .orElseThrow(() -> {
+                    log.error("Case Size not found with ID: {}", request.getSizeId());
+                    return new AppException(ErrorCode.CASE_SIZE_NOT_FOUND);
+                });
+
         Mainboard mainboard = mainboardMapper.toMainboard(request);
         mainboard.setSocket(socket);
         mainboard.setRamType(ramType);
         mainboard.setPcieVgaVersion(pcieVgaVersion);
+        mainboard.setSize(size);
 
         Mainboard savedMainboard = mainboardRepository.save(mainboard);
 
@@ -151,6 +162,16 @@ public class MainboardService {
                         return new RuntimeException("PCIe Version not found with id: " + request.getPcieVgaVersionId());
                     });
             mainboard.setPcieVgaVersion(pcieVgaVersion);
+        }
+
+        // Update CaseSize if provided
+        if (request.getSizeId() != null) {
+            CaseSize size = caseSizeRepository.findById(request.getSizeId())
+                    .orElseThrow(() -> {
+                        log.error("Case Size not found with ID: {}", request.getSizeId());
+                        return new AppException(ErrorCode.CASE_SIZE_NOT_FOUND);
+                    });
+            mainboard.setSize(size);
         }
 
         Mainboard updatedMainboard = mainboardRepository.save(mainboard);

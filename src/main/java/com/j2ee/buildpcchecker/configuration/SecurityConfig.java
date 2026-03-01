@@ -19,9 +19,19 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    private final String[] PUBLIC_ENPOINTS = {"/users",
+    private final String[] PUBLIC_ENPOINTS = {
+            "/users",
             "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh",
             "/auth/verify-email", "/auth/resend-verification"
+    };
+
+    private final String[] SWAGGER_WHITELIST = {
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/v3/api-docs/**",
+            "/api-docs/**",
+            "/swagger-resources/**",
+            "/webjars/**"
     };
 
     @Autowired
@@ -33,8 +43,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request ->
-                request.requestMatchers(HttpMethod.POST, PUBLIC_ENPOINTS).permitAll()
+                request
+                        // Allow Swagger/OpenAPI endpoints first - without any restrictions
+                        .requestMatchers(SWAGGER_WHITELIST).permitAll()
+                        // Then allow public endpoints
+                        .requestMatchers(HttpMethod.POST, PUBLIC_ENPOINTS).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_ENPOINTS).permitAll()
+                        // All other requests need authentication
                         .anyRequest().authenticated());
 
         httpSecurity.oauth2ResourceServer(oauth2 ->

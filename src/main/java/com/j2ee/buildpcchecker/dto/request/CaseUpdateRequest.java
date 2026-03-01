@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 public class CaseUpdateRequest {
 
     String name;
-    String size;
+    String sizeId;
     Integer maxVgaLengthMm;
     Integer maxCoolerHeightMm;
     Integer maxRadiatorSize;

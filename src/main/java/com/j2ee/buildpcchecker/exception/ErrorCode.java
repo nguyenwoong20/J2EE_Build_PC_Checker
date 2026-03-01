@@ -167,7 +167,13 @@ public enum ErrorCode
     FORM_FACTOR_ID_REQUIRED(3131, "Form Factor ID is required", HttpStatus.BAD_REQUEST),
     FORM_FACTOR_NAME_REQUIRED(3132, "Form Factor name is required", HttpStatus.BAD_REQUEST),
     FORM_FACTOR_NOT_FOUND(3133, "Form Factor not found", HttpStatus.NOT_FOUND),
-    FORM_FACTOR_ALREADY_EXISTS(3134, "Form Factor already exists", HttpStatus.BAD_REQUEST)
+    FORM_FACTOR_ALREADY_EXISTS(3134, "Form Factor already exists", HttpStatus.BAD_REQUEST),
+
+    // CaseSize validation errors (3141-3149)
+    CASE_SIZE_ID_REQUIRED(3141, "Case Size ID is required", HttpStatus.BAD_REQUEST),
+    CASE_SIZE_NAME_REQUIRED(3142, "Case Size name is required", HttpStatus.BAD_REQUEST),
+    CASE_SIZE_NOT_FOUND(3143, "Case Size not found", HttpStatus.NOT_FOUND),
+    CASE_SIZE_ALREADY_EXISTS(3144, "Case Size already exists", HttpStatus.BAD_REQUEST)
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

@@ -21,8 +21,9 @@ public class PcCase {
     @Column(nullable = false)
     String name;
 
-    @Column(nullable = false)
-    String size; // ATX / mATX / ITX
+    @ManyToOne
+    @JoinColumn(name = "size_id", nullable = false)
+    CaseSize size;
 
     @Column(name = "max_vga_length_mm", nullable = false)
     Integer maxVgaLengthMm;

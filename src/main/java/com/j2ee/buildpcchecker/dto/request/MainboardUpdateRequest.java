@@ -18,7 +18,7 @@ public class MainboardUpdateRequest {
     Integer ramBusMax;
     Integer ramSlot;
     Integer ramMaxCapacity;
-    String size;
+    String sizeId;
     String pcieVgaVersionId;
     Integer m2Slot;
     Integer sataSlot;

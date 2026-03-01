@@ -16,7 +16,7 @@ public class CaseCreationRequest {
     String name;
 
     @NotBlank(message = "CASE_SIZE_REQUIRED")
-    String size; // ATX / mATX / ITX
+    String sizeId;
 
     @NotNull(message = "CASE_MAX_VGA_LENGTH_REQUIRED")
     Integer maxVgaLengthMm;

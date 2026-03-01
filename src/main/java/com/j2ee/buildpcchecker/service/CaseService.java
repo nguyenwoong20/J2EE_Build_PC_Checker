@@ -3,11 +3,13 @@ package com.j2ee.buildpcchecker.service;
 import com.j2ee.buildpcchecker.dto.request.CaseCreationRequest;
 import com.j2ee.buildpcchecker.dto.request.CaseUpdateRequest;
 import com.j2ee.buildpcchecker.dto.response.CaseResponse;
+import com.j2ee.buildpcchecker.entity.CaseSize;
 import com.j2ee.buildpcchecker.entity.PcCase;
 import com.j2ee.buildpcchecker.exception.AppException;
 import com.j2ee.buildpcchecker.exception.ErrorCode;
 import com.j2ee.buildpcchecker.mapper.CaseMapper;
 import com.j2ee.buildpcchecker.repository.CaseRepository;
+import com.j2ee.buildpcchecker.repository.CaseSizeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,7 @@ public class CaseService {
 
     CaseRepository caseRepository;
     CaseMapper caseMapper;
+    CaseSizeRepository caseSizeRepository;
 
     /**
      * Create a new Case
@@ -38,7 +41,16 @@ public class CaseService {
             throw new AppException(ErrorCode.CASE_NAME_ALREADY_EXISTS);
         }
 
+        // Get CaseSize
+        CaseSize caseSize = caseSizeRepository.findById(request.getSizeId())
+                .orElseThrow(() -> {
+                    log.error("Case Size not found with ID: {}", request.getSizeId());
+                    return new AppException(ErrorCode.CASE_SIZE_NOT_FOUND);
+                });
+
         PcCase pcCase = caseMapper.toPcCase(request);
+        pcCase.setSize(caseSize);
+
         PcCase savedCase = caseRepository.save(pcCase);
 
         log.info("Case created successfully with ID: {}", savedCase.getId());
@@ -66,7 +78,7 @@ public class CaseService {
         PcCase pcCase = caseRepository.findById(caseId)
                 .orElseThrow(() -> {
                     log.error("Case not found with ID: {}", caseId);
-                    return new RuntimeException("Case not found with id: " + caseId);
+                    return new AppException(ErrorCode.CASE_NOT_FOUND);
                 });
 
         return caseMapper.toCaseResponse(pcCase);
@@ -84,8 +96,18 @@ public class CaseService {
         PcCase pcCase = caseRepository.findById(caseId)
                 .orElseThrow(() -> {
                     log.error("Case not found with ID: {}", caseId);
-                    return new RuntimeException("Case not found with id: " + caseId);
+                    return new AppException(ErrorCode.CASE_NOT_FOUND);
                 });
+
+        // Update CaseSize if sizeId is provided
+        if (request.getSizeId() != null) {
+            CaseSize caseSize = caseSizeRepository.findById(request.getSizeId())
+                    .orElseThrow(() -> {
+                        log.error("Case Size not found with ID: {}", request.getSizeId());
+                        return new AppException(ErrorCode.CASE_SIZE_NOT_FOUND);
+                    });
+            pcCase.setSize(caseSize);
+        }
 
         caseMapper.updatePcCase(pcCase, request);
         PcCase updatedCase = caseRepository.save(pcCase);
@@ -104,7 +126,7 @@ public class CaseService {
         PcCase pcCase = caseRepository.findById(caseId)
                 .orElseThrow(() -> {
                     log.error("Case not found with ID: {}", caseId);
-                    return new RuntimeException("Case not found with id: " + caseId);
+                    return new AppException(ErrorCode.CASE_NOT_FOUND);
                 });
 
         caseRepository.delete(pcCase);

@@ -3,11 +3,13 @@ package com.j2ee.buildpcchecker.service;
 import com.j2ee.buildpcchecker.dto.request.VgaCreationRequest;
 import com.j2ee.buildpcchecker.dto.request.VgaUpdateRequest;
 import com.j2ee.buildpcchecker.dto.response.VgaResponse;
+import com.j2ee.buildpcchecker.entity.PcieConnector;
 import com.j2ee.buildpcchecker.entity.PcieVersion;
 import com.j2ee.buildpcchecker.entity.Vga;
 import com.j2ee.buildpcchecker.exception.AppException;
 import com.j2ee.buildpcchecker.exception.ErrorCode;
 import com.j2ee.buildpcchecker.mapper.VgaMapper;
+import com.j2ee.buildpcchecker.repository.PcieConnectorRepository;
 import com.j2ee.buildpcchecker.repository.PcieVersionRepository;
 import com.j2ee.buildpcchecker.repository.VgaRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class VgaService {
     VgaRepository vgaRepository;
     VgaMapper vgaMapper;
     PcieVersionRepository pcieVersionRepository;
+    PcieConnectorRepository pcieConnectorRepository;
 
     /**
      * Create a new VGA
@@ -50,6 +53,16 @@ public class VgaService {
 
         Vga vga = vgaMapper.toVga(request);
         vga.setPcieVersion(pcieVersion);
+
+        // Get PowerConnector if provided (optional)
+        if (request.getPowerConnectorId() != null) {
+            PcieConnector powerConnector = pcieConnectorRepository.findById(request.getPowerConnectorId())
+                    .orElseThrow(() -> {
+                        log.error("PCIe Connector not found with ID: {}", request.getPowerConnectorId());
+                        return new AppException(ErrorCode.PCIE_CONNECTOR_NOT_FOUND);
+                    });
+            vga.setPowerConnector(powerConnector);
+        }
 
         Vga savedVga = vgaRepository.save(vga);
 
@@ -109,6 +122,16 @@ public class VgaService {
                         return new RuntimeException("PCIe Version not found with id: " + request.getPcieVersionId());
                     });
             vga.setPcieVersion(pcieVersion);
+        }
+
+        // Update PowerConnector if provided
+        if (request.getPowerConnectorId() != null) {
+            PcieConnector powerConnector = pcieConnectorRepository.findById(request.getPowerConnectorId())
+                    .orElseThrow(() -> {
+                        log.error("PCIe Connector not found with ID: {}", request.getPowerConnectorId());
+                        return new AppException(ErrorCode.PCIE_CONNECTOR_NOT_FOUND);
+                    });
+            vga.setPowerConnector(powerConnector);
         }
 
         Vga updatedVga = vgaRepository.save(vga);

@@ -12,7 +12,7 @@ public class CaseResponse {
 
     String id;
     String name;
-    String size;
+    CaseSizeResponse size;
     Integer maxVgaLengthMm;
     Integer maxCoolerHeightMm;
     Integer maxRadiatorSize;
