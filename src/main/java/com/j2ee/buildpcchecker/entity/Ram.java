@@ -40,6 +40,9 @@ public class Ram {
     @Column(nullable = false)
     Integer tdp;
 
+    @Column(name = "image_url", columnDefinition = "TEXT")
+    String imageUrl;
+
     @Column(columnDefinition = "TEXT")
     String description;
 }

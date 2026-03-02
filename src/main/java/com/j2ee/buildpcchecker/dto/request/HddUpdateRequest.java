@@ -15,5 +15,6 @@ public class HddUpdateRequest {
     String interfaceTypeId;
     Integer capacity;
     Integer tdp;
+    String imageUrl;
     String description;
 }

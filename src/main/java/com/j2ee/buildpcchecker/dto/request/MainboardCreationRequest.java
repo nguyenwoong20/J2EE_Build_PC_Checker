@@ -44,5 +44,6 @@ public class MainboardCreationRequest {
 
     Integer m2Slot;
     Integer sataSlot;
+    String imageUrl;
     String description;
 }

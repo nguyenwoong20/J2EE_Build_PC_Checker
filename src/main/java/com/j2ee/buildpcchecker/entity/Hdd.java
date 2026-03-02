@@ -35,6 +35,9 @@ public class Hdd {
     @Column(nullable = false)
     Integer tdp; // W
 
+    @Column(name = "image_url", columnDefinition = "TEXT")
+    String imageUrl;
+
     @Column(columnDefinition = "TEXT")
     String description;
 }

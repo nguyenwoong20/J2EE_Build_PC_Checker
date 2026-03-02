@@ -24,8 +24,14 @@ public class OpenApiConfig {
 
         Info info = new Info()
                 .title("Build PC Checker API")
-                .version("1.0.0")
-                .description("API documentation for Build PC Checker - PC component compatibility checker");
+                .version("2.0.0")
+                .description("API documentation for Build PC Checker - PC component management and compatibility validation system\n\n" +
+                        "Features:\n" +
+                        "• User Authentication & Email Verification\n" +
+                        "• PC Components Management (CPU, Mainboard, RAM, VGA, PSU, Case, Cooler, Storage)\n" +
+                        "• 🆕 Automated Compatibility Check System (6-Layer Validation)\n" +
+                        "• PSU Wattage Recommendation\n" +
+                        "• Bottleneck Detection");
 
         return new OpenAPI()
                 .info(info)

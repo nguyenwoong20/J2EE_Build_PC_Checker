@@ -28,5 +28,7 @@ public class PsuCreationRequest {
     @NotNull(message = "PSU_SATA_CONNECTOR_REQUIRED")
     Integer sataConnector; // số đầu SATA
 
+    String imageUrl;
+
     String description;
 }

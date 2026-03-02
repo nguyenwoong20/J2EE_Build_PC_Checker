@@ -18,6 +18,7 @@ public class CpuResponse {
     Integer tdp;
     PcieVersionResponse pcieVersion;
     Integer score;
+    String imageUrl;
     String description;
 }
 

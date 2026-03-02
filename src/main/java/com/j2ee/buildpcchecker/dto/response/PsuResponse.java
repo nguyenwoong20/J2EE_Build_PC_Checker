@@ -18,5 +18,6 @@ public class PsuResponse {
     String efficiency;
     Set<PcieConnectorResponse> pcieConnectors;
     Integer sataConnector;
+    String imageUrl;
     String description;
 }

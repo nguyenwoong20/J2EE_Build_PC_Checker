@@ -25,5 +25,7 @@ public class CoolerCreationRequest {
     @NotNull(message = "COOLER_TDP_SUPPORT_REQUIRED")
     Integer tdpSupport; // W
 
+    String imageUrl;
+
     String description;
 }

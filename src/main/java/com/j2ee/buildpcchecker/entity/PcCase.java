@@ -40,6 +40,9 @@ public class PcCase {
     @Column(name = "drive_25_slot", nullable = false)
     Integer drive25Slot; // số ổ 2.5"
 
+    @Column(name = "image_url", columnDefinition = "TEXT")
+    String imageUrl;
+
     @Column(columnDefinition = "TEXT")
     String description;
 }

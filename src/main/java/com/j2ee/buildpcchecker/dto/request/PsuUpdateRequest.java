@@ -17,5 +17,6 @@ public class PsuUpdateRequest {
     String efficiency;
     Set<String> pcieConnectorIds;
     Integer sataConnector;
+    String imageUrl;
     String description;
 }

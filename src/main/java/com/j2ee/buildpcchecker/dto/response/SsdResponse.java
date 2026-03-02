@@ -17,5 +17,6 @@ public class SsdResponse {
     InterfaceTypeResponse interfaceType;
     Integer capacity;
     Integer tdp;
+    String imageUrl;
     String description;
 }

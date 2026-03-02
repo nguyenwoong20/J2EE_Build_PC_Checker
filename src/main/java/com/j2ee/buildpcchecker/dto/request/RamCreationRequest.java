@@ -33,6 +33,8 @@ public class RamCreationRequest {
     @NotNull(message = "RAM_TDP_REQUIRED")
     Integer tdp;
 
+    String imageUrl;
+
     String description;
 }
 

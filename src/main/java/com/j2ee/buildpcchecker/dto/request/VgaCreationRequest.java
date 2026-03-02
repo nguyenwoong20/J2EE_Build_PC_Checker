@@ -29,6 +29,8 @@ public class VgaCreationRequest {
     @NotNull(message = "VGA_SCORE_REQUIRED")
     Integer score;
 
+    String imageUrl;
+
     String description;
 }
 

@@ -34,6 +34,9 @@ public class Cooler {
     @Column(name = "tdp_support", nullable = false)
     Integer tdpSupport; // W
 
+    @Column(name = "image_url", columnDefinition = "TEXT")
+    String imageUrl;
+
     @Column(columnDefinition = "TEXT")
     String description;
 }

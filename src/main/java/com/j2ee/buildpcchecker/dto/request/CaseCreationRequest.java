@@ -33,5 +33,7 @@ public class CaseCreationRequest {
     @NotNull(message = "CASE_DRIVE_25_SLOT_REQUIRED")
     Integer drive25Slot; // số ổ 2.5"
 
+    String imageUrl;
+
     String description;
 }

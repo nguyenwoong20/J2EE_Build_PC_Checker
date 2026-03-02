@@ -23,6 +23,7 @@ public class MainboardResponse {
     PcieVersionResponse pcieVgaVersion;
     Integer m2Slot;
     Integer sataSlot;
+    String imageUrl;
     String description;
 }
 

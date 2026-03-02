@@ -17,6 +17,7 @@ public class RamUpdateRequest {
     Integer capacityPerStick;
     Integer quantity;
     Integer tdp;
+    String imageUrl;
     String description;
 }
 

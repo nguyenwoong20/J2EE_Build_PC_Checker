@@ -58,6 +58,9 @@ public class Mainboard {
     @Column(name = "sata_slot")
     Integer sataSlot;
 
+    @Column(name = "image_url", columnDefinition = "TEXT")
+    String imageUrl;
+
     @Column(columnDefinition = "TEXT")
     String description;
 }

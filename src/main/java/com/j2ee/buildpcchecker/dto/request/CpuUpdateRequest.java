@@ -17,6 +17,7 @@ public class CpuUpdateRequest {
     Integer tdp;
     String pcieVersionId;
     Integer score;
+    String imageUrl;
     String description;
 }
 

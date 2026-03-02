@@ -30,5 +30,7 @@ public class SsdCreationRequest {
     @NotNull(message = "SSD_TDP_REQUIRED")
     Integer tdp; // W
 
+    String imageUrl;
+
     String description;
 }

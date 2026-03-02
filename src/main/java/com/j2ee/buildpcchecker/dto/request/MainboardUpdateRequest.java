@@ -22,6 +22,7 @@ public class MainboardUpdateRequest {
     String pcieVgaVersionId;
     Integer m2Slot;
     Integer sataSlot;
+    String imageUrl;
     String description;
 }
 

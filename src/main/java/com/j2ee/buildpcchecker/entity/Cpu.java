@@ -41,6 +41,9 @@ public class Cpu {
     @Column(nullable = false)
     Integer score;
 
+    @Column(name = "image_url", columnDefinition = "TEXT")
+    String imageUrl;
+
     @Column(columnDefinition = "TEXT")
     String description;
 }

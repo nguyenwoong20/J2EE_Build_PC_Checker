@@ -18,6 +18,7 @@ public class RamResponse {
     Integer capacityPerStick;
     Integer quantity;
     Integer tdp;
+    String imageUrl;
     String description;
 }
 

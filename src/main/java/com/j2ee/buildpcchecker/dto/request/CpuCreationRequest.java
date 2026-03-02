@@ -32,5 +32,7 @@ public class CpuCreationRequest {
     @NotNull(message = "CPU_SCORE_REQUIRED")
     Integer score;
 
+    String imageUrl;
+
     String description;
 }

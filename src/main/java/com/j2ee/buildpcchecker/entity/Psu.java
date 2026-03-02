@@ -40,6 +40,9 @@ public class Psu {
     @Column(name = "sata_connector", nullable = false)
     Integer sataConnector; // số đầu SATA
 
+    @Column(name = "image_url", columnDefinition = "TEXT")
+    String imageUrl;
+
     @Column(columnDefinition = "TEXT")
     String description;
 }

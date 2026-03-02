@@ -27,5 +27,7 @@ public class HddCreationRequest {
     @NotNull(message = "HDD_TDP_REQUIRED")
     Integer tdp; // W
 
+    String imageUrl;
+
     String description;
 }

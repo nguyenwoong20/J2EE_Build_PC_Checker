@@ -18,5 +18,6 @@ public class CaseResponse {
     Integer maxRadiatorSize;
     Integer drive35Slot;
     Integer drive25Slot;
+    String imageUrl;
     String description;
 }

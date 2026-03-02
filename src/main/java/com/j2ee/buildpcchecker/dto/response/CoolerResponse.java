@@ -16,5 +16,6 @@ public class CoolerResponse {
     Integer radiatorSize;
     Integer heightMm;
     Integer tdpSupport;
+    String imageUrl;
     String description;
 }
