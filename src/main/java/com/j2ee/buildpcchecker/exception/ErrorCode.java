@@ -192,7 +192,12 @@ public enum ErrorCode
     CASE_SIZE_IN_USE_BY_MAINBOARD(4014, "Cannot delete Case Size. There are Mainboards using this Case Size", HttpStatus.CONFLICT),
     CASE_SIZE_IN_USE_BY_CASE(4015, "Cannot delete Case Size. There are Cases using this Case Size", HttpStatus.CONFLICT),
     PCIE_CONNECTOR_IN_USE(4016, "Cannot delete PCIe Connector. There are PSUs using this PCIe Connector", HttpStatus.CONFLICT),
-    FOREIGN_KEY_VIOLATION(4099, "Cannot delete this entity. It is being referenced by other entities", HttpStatus.CONFLICT)
+    FOREIGN_KEY_VIOLATION(4099, "Cannot delete this entity. It is being referenced by other entities", HttpStatus.CONFLICT),
+
+    // PC Build validation errors (5001-5099)
+    BUILD_NAME_REQUIRED(5001, "Build name is required", HttpStatus.BAD_REQUEST),
+    BUILD_NOT_FOUND(5002, "Build not found", HttpStatus.NOT_FOUND),
+    BUILD_UNAUTHORIZED_ACCESS(5003, "You don't have permission to access this build", HttpStatus.FORBIDDEN)
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

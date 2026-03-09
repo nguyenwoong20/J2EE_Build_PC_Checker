@@ -2,7 +2,10 @@ package com.j2ee.buildpcchecker.controller;
 
 import com.j2ee.buildpcchecker.dto.request.ApiResponse;
 import com.j2ee.buildpcchecker.dto.request.BuildCheckRequest;
+import com.j2ee.buildpcchecker.dto.request.SaveBuildRequest;
 import com.j2ee.buildpcchecker.dto.response.CompatibilityResult;
+import com.j2ee.buildpcchecker.dto.response.PcBuildResponse;
+import com.j2ee.buildpcchecker.service.BuildService;
 import com.j2ee.buildpcchecker.service.CompatibilityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,13 +13,13 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * REST Controller for PC Build Compatibility Checking
@@ -29,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BuildController {
 
     CompatibilityService compatibilityService;
+    BuildService buildService;
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",
@@ -110,6 +114,140 @@ public class BuildController {
 
         return ApiResponse.<CompatibilityResult>builder()
                 .result(result)
+                .build();
+    }
+
+    /**
+     * Save a new PC build configuration
+     * POST /builds
+     */
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "200",
+            description = "Build saved successfully",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ApiResponse.class),
+                    examples = @ExampleObject(
+                            name = "Success Response",
+                            value = """
+                                    {
+                                      "code": 1000,
+                                      "message": "Build saved successfully",
+                                      "result": {
+                                        "id": "7c9e8b5a-1234-5678-90ab-cdef12345678",
+                                        "name": "Gaming Build 2026",
+                                        "description": "Intel i9 + RTX 4090 Gaming Setup",
+                                        "totalTdp": null,
+                                        "createdAt": "2026-03-09T20:45:00",
+                                        "userId": "user-uuid",
+                                        "parts": {
+                                          "CPU": "550e8400-e29b-41d4-a716-446655440000",
+                                          "MAINBOARD": "550e8400-e29b-41d4-a716-446655440001",
+                                          "RAM": "550e8400-e29b-41d4-a716-446655440002",
+                                          "GPU": "550e8400-e29b-41d4-a716-446655440003",
+                                          "PSU": "550e8400-e29b-41d4-a716-446655440004"
+                                        }
+                                      }
+                                    }
+                                    """
+                    )
+            )
+    )
+    @PostMapping
+    public ApiResponse<PcBuildResponse> saveBuild(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "PC Build configuration with name, description, and parts map",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = SaveBuildRequest.class),
+                            examples = @ExampleObject(
+                                    name = "Sample Build Request",
+                                    value = """
+                                            {
+                                              "name": "Gaming Build 2026",
+                                              "description": "Intel i9 + RTX 4090 Gaming Setup",
+                                              "parts": {
+                                                "cpu": "uuid-of-cpu",
+                                                "mainboard": "uuid-of-mainboard",
+                                                "ram": "uuid-of-ram",
+                                                "vga": "uuid-of-vga",
+                                                "psu": "uuid-of-psu",
+                                                "case": "uuid-of-case",
+                                                "cooler": "uuid-of-cooler",
+                                                "ssd": "uuid-of-ssd",
+                                                "hdd": "uuid-of-hdd"
+                                              }
+                                            }
+                                            """
+                            )
+                    )
+            )
+            @Valid @RequestBody SaveBuildRequest request) {
+        log.info("Saving new PC build with name: {}", request.getName());
+
+        PcBuildResponse response = buildService.saveBuild(request);
+
+        return ApiResponse.<PcBuildResponse>builder()
+                .message("Build saved successfully")
+                .result(response)
+                .build();
+    }
+
+    /**
+     * Get all builds for the current user
+     * GET /builds
+     */
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "200",
+            description = "Builds retrieved successfully"
+    )
+    @GetMapping
+    public ApiResponse<List<PcBuildResponse>> getMyBuilds() {
+        log.info("Getting all builds for current user");
+
+        List<PcBuildResponse> builds = buildService.getMyBuilds();
+
+        return ApiResponse.<List<PcBuildResponse>>builder()
+                .result(builds)
+                .build();
+    }
+
+    /**
+     * Get a specific build by ID
+     * GET /builds/{id}
+     */
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "200",
+            description = "Build retrieved successfully"
+    )
+    @GetMapping("/{id}")
+    public ApiResponse<PcBuildResponse> getBuildById(@PathVariable String id) {
+        log.info("Getting build with ID: {}", id);
+
+        PcBuildResponse response = buildService.getBuildById(id);
+
+        return ApiResponse.<PcBuildResponse>builder()
+                .result(response)
+                .build();
+    }
+
+    /**
+     * Delete a build by ID
+     * DELETE /builds/{id}
+     */
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "200",
+            description = "Build deleted successfully"
+    )
+    @DeleteMapping("/{id}")
+    public ApiResponse<Void> deleteBuild(@PathVariable String id) {
+        log.info("Deleting build with ID: {}", id);
+
+        buildService.deleteBuild(id);
+
+        return ApiResponse.<Void>builder()
+                .message("Build deleted successfully")
                 .build();
     }
 }
