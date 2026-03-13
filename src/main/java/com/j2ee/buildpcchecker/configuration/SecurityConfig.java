@@ -46,6 +46,8 @@ public class SecurityConfig {
                 request
                         // Allow Swagger/OpenAPI endpoints first - without any restrictions
                         .requestMatchers(SWAGGER_WHITELIST).permitAll()
+                        // Allow public static images
+                        .requestMatchers(HttpMethod.GET, "/images/**").permitAll()
                         // Then allow public endpoints
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENPOINTS).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_ENPOINTS).permitAll()

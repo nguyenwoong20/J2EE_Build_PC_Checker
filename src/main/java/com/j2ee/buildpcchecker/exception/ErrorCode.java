@@ -203,7 +203,12 @@ public enum ErrorCode
     CPU_ID_REQUIRED(6001, "CPU ID is required", HttpStatus.BAD_REQUEST),
     GPU_ID_REQUIRED(6002, "GPU ID is required", HttpStatus.BAD_REQUEST),
     RAM_ID_REQUIRED(6003, "RAM ID is required", HttpStatus.BAD_REQUEST),
-    SSD_ID_REQUIRED(6004, "SSD ID is required", HttpStatus.BAD_REQUEST)
+    SSD_ID_REQUIRED(6004, "SSD ID is required", HttpStatus.BAD_REQUEST),
+
+    // File storage errors (6101-6199)
+    FILE_EMPTY(6101, "File is empty", HttpStatus.BAD_REQUEST),
+    FILE_INVALID_NAME(6102, "File name or entity is invalid", HttpStatus.BAD_REQUEST),
+    FILE_STORAGE_ERROR(6103, "Failed to store file", HttpStatus.INTERNAL_SERVER_ERROR)
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

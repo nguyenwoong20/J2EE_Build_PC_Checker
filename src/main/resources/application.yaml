@@ -7,9 +7,9 @@ spring:
   application:
     name: buildpcchecker
   datasource:
-    url: jdbc:mysql://localhost:3306/identity_service
+    url: jdbc:mysql://localhost:3306/identity_service2
     username: root
-    password: 0937673915
+    password: 123456
   jpa:
     hibernate:
       ddl-auto: update
@@ -32,6 +32,8 @@ spring:
 
 app:
   base-url: http://localhost:8080/identity  # URL base của ứng dụng
+  file:
+    upload-dir: /uploads/images
   openapi:
     dev-url: http://localhost:8080
 
@@ -53,4 +55,3 @@ springdoc:
     filter: true
     display-request-duration: true
   show-actuator: false
-
