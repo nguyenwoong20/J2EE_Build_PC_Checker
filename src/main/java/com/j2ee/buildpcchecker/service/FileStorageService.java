@@ -22,7 +22,7 @@ import java.util.UUID;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class FileStorageService {
 
-    @Value("${app.file.upload-dir:/uploads/images}")
+    @Value("${app.file.upload-dir:${user.dir}/uploads/images}")
     String uploadDir;
 
     public String storeFile(MultipartFile file) {
@@ -88,4 +88,3 @@ public class FileStorageService {
         return originalName.substring(lastDotIndex + 1);
     }
 }
-

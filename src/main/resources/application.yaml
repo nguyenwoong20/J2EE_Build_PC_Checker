@@ -33,7 +33,7 @@ spring:
 app:
   base-url: http://localhost:8080/identity  # URL base của ứng dụng
   file:
-    upload-dir: /uploads/images
+    upload-dir: ${user.dir}/uploads/images
   openapi:
     dev-url: http://localhost:8080
 
