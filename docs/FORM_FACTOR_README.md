@@ -189,8 +189,8 @@ DELETE /form-factors/{id}      - Xóa form factor
 ## 📚 Documentation
 
 - **Chi tiết SQL Migration:** [FORM_FACTOR_MIGRATION.sql](./FORM_FACTOR_MIGRATION.sql)
-- **API Examples đầy đủ:** [FORM_FACTOR_API_EXAMPLES.md](./FORM_FACTOR_API_EXAMPLES.md)
-- **Changelog chi tiết:** [CHANGELOG_FORM_FACTOR_2026-02-14.md](./CHANGELOG_FORM_FACTOR_2026-02-14.md)
+- **API Examples đầy đủ:** [FORM_FACTOR_API_EXAMPLES.md](FORM_FACTOR_API_EXAMPLES.md)
+- **Changelog chi tiết:** [CHANGELOG_FORM_FACTOR_2026-02-14.md](CHANGELOG_FORM_FACTOR_2026-02-14.md)
 
 ## ✅ Testing Checklist
 

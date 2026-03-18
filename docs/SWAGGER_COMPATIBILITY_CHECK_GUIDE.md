@@ -324,9 +324,9 @@ Fill all fields with real IDs and see comprehensive validation!
 ## 📚 Additional Resources
 
 ### Related Documentation
-- [Compatibility Check Quick Start](./COMPATIBILITY_CHECK_QUICKSTART.md)
-- [Complete API Guide](./COMPATIBILITY_CHECK_API_GUIDE.md)
-- [Postman Testing Guide](./COMPATIBILITY_CHECK_POSTMAN_TESTS.md)
+- [Compatibility Check Quick Start](COMPATIBILITY_CHECK_QUICKSTART.md)
+- [Complete API Guide](COMPATIBILITY_CHECK_API_GUIDE.md)
+- [Postman Testing Guide](COMPATIBILITY_CHECK_POSTMAN_TESTS.md)
 
 ### Swagger Resources
 - OpenAPI Specification: https://swagger.io/specification/

@@ -19,94 +19,89 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    private final String[] PUBLIC_ENPOINTS = {
-            "/users",
-            "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh",
-            "/auth/verify-email", "/auth/resend-verification"
-    };
+        private final String[] PUBLIC_ENPOINTS = {
+                        "/users",
+                        "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh",
+                        "/auth/verify-email", "/auth/resend-verification", "/builds/check-compatibility",
+                        "/builds/analyze"
+        };
 
-    private final String[] COMPONENT_ENDPOINTS = {
-            "/cpus", "/cpus/**",
-            "/mainboards", "/mainboards/**",
-            "/rams", "/rams/**",
-            "/vgas", "/vgas/**",
-            "/ssds", "/ssds/**",
-            "/hdds", "/hdds/**",
-            "/psus", "/psus/**",
-            "/coolers", "/coolers/**",
-            "/cases", "/cases/**",
-            "/sockets", "/sockets/**",
-            "/ram-types", "/ram-types/**",
-            "/ssd-types", "/ssd-types/**",
-            "/interface-types", "/interface-types/**",
-            "/form-factors", "/form-factors/**",
-            "/cooler-types", "/cooler-types/**",
-            "/case-sizes", "/case-sizes/**",
-            "/pcie-versions", "/pcie-versions/**",
-            "/pcie-connectors", "/pcie-connectors/**"
-    };
+        private final String[] COMPONENT_ENDPOINTS = {
+                        "/cpus", "/cpus/**",
+                        "/mainboards", "/mainboards/**",
+                        "/rams", "/rams/**",
+                        "/vgas", "/vgas/**",
+                        "/ssds", "/ssds/**",
+                        "/hdds", "/hdds/**",
+                        "/psus", "/psus/**",
+                        "/coolers", "/coolers/**",
+                        "/cases", "/cases/**",
+                        "/sockets", "/sockets/**",
+                        "/ram-types", "/ram-types/**",
+                        "/ssd-types", "/ssd-types/**",
+                        "/interface-types", "/interface-types/**",
+                        "/form-factors", "/form-factors/**",
+                        "/cooler-types", "/cooler-types/**",
+                        "/case-sizes", "/case-sizes/**",
+                        "/pcie-versions", "/pcie-versions/**",
+                        "/pcie-connectors", "/pcie-connectors/**"
+        };
 
-    private final String[] SWAGGER_WHITELIST = {
-            "/swagger-ui/**",
-            "/swagger-ui.html",
-            "/v3/api-docs/**",
-            "/api-docs/**",
-            "/swagger-resources/**",
-            "/webjars/**"
-    };
+        private final String[] SWAGGER_WHITELIST = {
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
+                        "/v3/api-docs/**",
+                        "/api-docs/**",
+                        "/swagger-resources/**",
+                        "/webjars/**"
+        };
 
-    @Autowired
-    private CustomJwtDecoder customJwtDecoder;
+        @Autowired
+        private CustomJwtDecoder customJwtDecoder;
 
-    @Autowired
-    private CorsConfigurationSource corsConfigurationSource;
+        @Autowired
+        private CorsConfigurationSource corsConfigurationSource;
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(request ->
-                request
-                        // Allow Swagger/OpenAPI endpoints first - without any restrictions
-                        .requestMatchers(SWAGGER_WHITELIST).permitAll()
-                        // Allow public static images
-                        .requestMatchers(HttpMethod.GET, "/images/**").permitAll()
-                        // Public GET for PC components and sub-components
-                        .requestMatchers(HttpMethod.GET, COMPONENT_ENDPOINTS).permitAll()
-                        // Then allow public endpoints
-                        .requestMatchers(HttpMethod.POST, PUBLIC_ENPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.GET, PUBLIC_ENPOINTS).permitAll()
-                        // All other requests need authentication
-                        .anyRequest().authenticated());
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+                httpSecurity.authorizeHttpRequests(request -> request
+                                // Allow Swagger/OpenAPI endpoints first - without any restrictions
+                                .requestMatchers(SWAGGER_WHITELIST).permitAll()
+                                // Allow public static images
+                                .requestMatchers(HttpMethod.GET, "/images/**").permitAll()
+                                // Public GET for PC components and sub-components
+                                .requestMatchers(HttpMethod.GET, COMPONENT_ENDPOINTS).permitAll()
+                                // Then allow public endpoints
+                                .requestMatchers(HttpMethod.POST, PUBLIC_ENPOINTS).permitAll()
+                                .requestMatchers(HttpMethod.GET, PUBLIC_ENPOINTS).permitAll()
+                                // All other requests need authentication
+                                .anyRequest().authenticated());
 
-        httpSecurity.oauth2ResourceServer(oauth2 ->
-                oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(customJwtDecoder)
-                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
-        );
+                httpSecurity.oauth2ResourceServer(oauth2 -> oauth2
+                                .jwt(jwtConfigurer -> jwtConfigurer.decoder(customJwtDecoder)
+                                                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                                .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
 
-        // Enable CORS
-        httpSecurity.cors(cors -> cors.configurationSource(corsConfigurationSource));
+                // Enable CORS
+                httpSecurity.cors(cors -> cors.configurationSource(corsConfigurationSource));
 
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
-        return httpSecurity.build();
-    }
+                httpSecurity.csrf(AbstractHttpConfigurer::disable);
+                return httpSecurity.build();
+        }
 
+        @Bean
+        JwtAuthenticationConverter jwtAuthenticationConverter() {
+                JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+                grantedAuthoritiesConverter.setAuthorityPrefix("");
 
-    @Bean
-    JwtAuthenticationConverter jwtAuthenticationConverter()
-    {
-        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        grantedAuthoritiesConverter.setAuthorityPrefix("");
+                JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+                converter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+                return converter;
+        }
 
-
-        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
-        converter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-        return converter;
-    }
-
-    @Bean
-    PasswordEncoder passwordEncoder()
-    {
-        return new BCryptPasswordEncoder(10);
-    }
+        @Bean
+        PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder(10);
+        }
 
 }

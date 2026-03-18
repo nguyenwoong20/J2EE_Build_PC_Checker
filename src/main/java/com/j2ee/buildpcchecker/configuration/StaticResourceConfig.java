@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class StaticResourceConfig implements WebMvcConfigurer {
 
-    @Value("${app.file.upload-dir:/uploads/images}")
+    @Value("${app.file.upload-dir:${user.dir}/uploads/images}")
     String uploadDir;
 
     @Override
@@ -25,4 +25,3 @@ public class StaticResourceConfig implements WebMvcConfigurer {
                 .addResourceLocations(location);
     }
 }
-

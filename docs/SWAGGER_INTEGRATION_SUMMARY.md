@@ -328,7 +328,7 @@ All fields have:
 6. ✅ Explore other endpoints
 
 ### For Testing:
-1. ✅ Follow [SWAGGER_COMPATIBILITY_CHECK_GUIDE.md](./SWAGGER_COMPATIBILITY_CHECK_GUIDE.md)
+1. ✅ Follow [SWAGGER_COMPATIBILITY_CHECK_GUIDE.md](SWAGGER_COMPATIBILITY_CHECK_GUIDE.md)
 2. ✅ Get component IDs from GET endpoints
 3. ✅ Test various scenarios
 4. ✅ Verify validation results
@@ -390,7 +390,7 @@ http://localhost:8080/identity/swagger-ui.html
 ```
 
 **Guide:**
-- [SWAGGER_COMPATIBILITY_CHECK_GUIDE.md](./SWAGGER_COMPATIBILITY_CHECK_GUIDE.md)
+- [SWAGGER_COMPATIBILITY_CHECK_GUIDE.md](SWAGGER_COMPATIBILITY_CHECK_GUIDE.md)
 
 ---
 
