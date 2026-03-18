@@ -10,12 +10,10 @@ import com.j2ee.buildpcchecker.dto.response.PcBuildResponse;
 import com.j2ee.buildpcchecker.service.BuildAnalyzerService;
 import com.j2ee.buildpcchecker.service.BuildService;
 import com.j2ee.buildpcchecker.service.CompatibilityService;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -273,9 +271,31 @@ public class BuildController {
                                       "code": 1000,
                                       "message": "Success",
                                       "result": {
-                                        "bottleneck": 12.3,
-                                        "balanceStatus": "Good Balance",
-                                        "estimatedWattage": 450
+                                        "cpu": { "name": "Intel Core i3-10100F", "score": 8716 },
+                                        "gpu": { "name": "GeForce RTX 3060", "score": 16747 },
+                                        "results": {
+                                          "1080p": {
+                                            "bottleneck": true,
+                                            "type": "CPU",
+                                            "severity": "MEDIUM",
+                                            "ratio": 0.62,
+                                            "message": "CPU Intel Core i3-10100F có thể giới hạn hiệu năng của GeForce RTX 3060 khi chơi game ở độ phân giải 1080p."
+                                          },
+                                          "2k": {
+                                            "bottleneck": true,
+                                            "type": "CPU",
+                                            "severity": "MEDIUM",
+                                            "ratio": 0.52,
+                                            "message": "CPU Intel Core i3-10100F có thể giới hạn hiệu năng của GeForce RTX 3060 khi chơi game ở độ phân giải 2K."
+                                          },
+                                          "4k": {
+                                            "bottleneck": true,
+                                            "type": "CPU",
+                                            "severity": "HIGH",
+                                            "ratio": 0.41,
+                                            "message": "CPU Intel Core i3-10100F sẽ trở thành điểm nghẽn đáng kể cho GeForce RTX 3060 ở độ phân giải 4k."
+                                          }
+                                        },
                                       }
                                     }
                                     """
@@ -284,8 +304,7 @@ public class BuildController {
     )
     @PostMapping("/analyze")
     public ApiResponse<BuildAnalysisResponse> analyzeBuild(@RequestBody @Valid AnalyzeBuildRequest request) {
-        log.info("Analyzing build - CPU: {}, GPU: {}, RAM: {}, SSD: {}",
-                request.getCpuId(), request.getGpuId(), request.getRamId(), request.getSsdId());
+        log.info("Analyzing build - CPU: {}, VGA: {}", request.getCpuId(), request.getVgaId());
 
         BuildAnalysisResponse analysisResult = buildAnalyzerService.analyzeBuild(request);
 
