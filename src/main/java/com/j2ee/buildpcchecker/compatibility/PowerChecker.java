@@ -22,14 +22,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PowerChecker {
 
-    private static final int SYSTEM_OVERHEAD = 75; // W
-    private static final double SAFETY_MARGIN = 1.2;
+    // private static final int SYSTEM_OVERHEAD = 75; // W
+    private static final double SAFETY_MARGIN = 1.7;
 
     public void check(Psu psu, Cpu cpu, Vga vga, Ram ram, List<Ssd> ssds, List<Hdd> hdds,
-                     CompatibilityResult result) {
+            CompatibilityResult result) {
 
         int totalTdp = calculateTotalTdp(cpu, vga, ram, ssds, hdds);
-        int recommended = (int) Math.ceil(totalTdp * SAFETY_MARGIN);
+        int recommended = totalTdp;
 
         result.setRecommendedPsuWattage(recommended);
 
@@ -43,7 +43,7 @@ public class PowerChecker {
     }
 
     private int calculateTotalTdp(Cpu cpu, Vga vga, Ram ram, List<Ssd> ssds, List<Hdd> hdds) {
-        int total = SYSTEM_OVERHEAD;
+        int total = 0;
 
         if (cpu != null) {
             total += cpu.getTdp();
@@ -65,7 +65,8 @@ public class PowerChecker {
             total += hdds.stream().mapToInt(Hdd::getTdp).sum();
         }
 
-        return total;
+        total += 50;
+        return (int) Math.ceil((total * SAFETY_MARGIN) / 50) * 50;
     }
 
     private void checkWattage(Psu psu, int recommended, CompatibilityResult result) {
@@ -73,8 +74,7 @@ public class PowerChecker {
             result.addError(String.format(
                     CompatibilityMessages.PSU_WATTAGE_INSUFFICIENT,
                     psu.getWattage(),
-                    recommended
-            ));
+                    recommended));
         }
     }
 
@@ -90,8 +90,7 @@ public class PowerChecker {
         if (!hasConnector) {
             result.addError(String.format(
                     CompatibilityMessages.PSU_PCIE_CONNECTOR_MISSING,
-                    vga.getPowerConnector().getName()
-            ));
+                    vga.getPowerConnector().getName()));
         }
     }
 
@@ -114,10 +113,7 @@ public class PowerChecker {
             result.addError(String.format(
                     CompatibilityMessages.PSU_SATA_CONNECTOR_INSUFFICIENT,
                     psu.getSataConnector(),
-                    sataDriveCount
-            ));
+                    sataDriveCount));
         }
     }
 }
-
-

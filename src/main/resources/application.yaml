@@ -7,9 +7,9 @@ spring:
   application:
     name: buildpcchecker
   datasource:
-    url: jdbc:mysql://localhost:3306/identity_service2
+    url: jdbc:mysql://localhost:3306/identity_service
     username: root
-    password: 123456
+    password: 0937673915
   jpa:
     hibernate:
       ddl-auto: update

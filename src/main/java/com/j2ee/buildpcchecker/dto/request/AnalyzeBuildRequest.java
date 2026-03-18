@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Schema(description = "Request for analyzing PC build bottleneck and power consumption")
+@Schema(description = "Request for analyzing PC build bottleneck")
 public class AnalyzeBuildRequest {
 
     @NotBlank(message = "CPU_ID_REQUIRED")
@@ -18,15 +18,7 @@ public class AnalyzeBuildRequest {
     String cpuId;
 
     @NotBlank(message = "GPU_ID_REQUIRED")
-    @Schema(description = "GPU (VGA) ID (UUID)", example = "uuid", required = true)
-    String gpuId;
-
-    @NotBlank(message = "RAM_ID_REQUIRED")
-    @Schema(description = "RAM ID (UUID)", example = "uuid", required = true)
-    String ramId;
-
-    @NotBlank(message = "SSD_ID_REQUIRED")
-    @Schema(description = "SSD ID (UUID)", example = "uuid", required = true)
-    String ssdId;
+    @Schema(description = "VGA (GPU) ID (UUID)", example = "uuid", required = true)
+    String vgaId;
 }
 
