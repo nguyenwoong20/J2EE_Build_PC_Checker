@@ -17,7 +17,7 @@ public class PcBuildResponse {
     String userId;
     String name;
     String description;
-    Map<String, String> parts;  // key: partType, value: partId
+    Map<String, Object> parts;  // key: partType, value: Component Details Object (Response DTO)
     LocalDateTime createdAt;
 }
 
