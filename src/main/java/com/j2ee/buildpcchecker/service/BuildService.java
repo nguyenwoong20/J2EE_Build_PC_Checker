@@ -182,7 +182,6 @@ public class BuildService {
                 .id(build.getId())
                 .name(build.getName())
                 .description(build.getDescription())
-                .totalTdp(build.getTotalTdp())
                 .createdAt(build.getCreatedAt())
                 .userId(build.getUser().getId())
                 .parts(partsMap)

@@ -9,7 +9,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/identity_service
     username: root
-    password: 0937673915
+    password: 123456
   jpa:
     hibernate:
       ddl-auto: update

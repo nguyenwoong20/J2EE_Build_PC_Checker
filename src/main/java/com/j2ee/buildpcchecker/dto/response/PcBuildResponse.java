@@ -14,11 +14,10 @@ import java.util.Map;
 public class PcBuildResponse {
 
     String id;
+    String userId;
     String name;
     String description;
-    Integer totalTdp;
-    LocalDateTime createdAt;
-    String userId;
     Map<String, String> parts;  // key: partType, value: partId
+    LocalDateTime createdAt;
 }
 
