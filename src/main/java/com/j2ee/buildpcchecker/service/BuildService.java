@@ -22,6 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.j2ee.buildpcchecker.dto.request.BuildCheckRequest;
+import com.j2ee.buildpcchecker.dto.response.CompatibilityResult;
+import java.util.Collections;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -31,6 +35,7 @@ public class BuildService {
     PcBuildRepository pcBuildRepository;
     PcBuildPartRepository pcBuildPartRepository;
     UserRepository userRepository;
+    CompatibilityService compatibilityService;
 
     @Transactional
     public PcBuildResponse saveBuild(SaveBuildRequest request) {
@@ -42,6 +47,39 @@ public class BuildService {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        if (pcBuildRepository.existsByUserIdAndName(user.getId(), request.getName())) {
+            throw new AppException(ErrorCode.BUILD_NAME_ALREADY_EXISTS);
+        }
+
+        // Validate compatibility before saving
+        Map<String, String> parts = request.getParts();
+        if (parts != null && !parts.isEmpty()) {
+            BuildCheckRequest checkRequest = BuildCheckRequest.builder()
+                    .cpuId(parts.getOrDefault("cpu", parts.get("CPU")))
+                    .mainboardId(parts.getOrDefault("mainboard", parts.get("MAINBOARD")))
+                    .ramId(parts.getOrDefault("ram", parts.get("RAM")))
+                    .vgaId(parts.getOrDefault("vga", parts.get("VGA")))
+                    .psuId(parts.getOrDefault("psu", parts.get("PSU")))
+                    .caseId(parts.getOrDefault("case", parts.get("CASE")))
+                    .coolerId(parts.getOrDefault("cooler", parts.get("COOLER")))
+                    .build();
+
+            String ssdId = parts.getOrDefault("ssd", parts.get("SSD"));
+            if (ssdId != null && !ssdId.isBlank()) {
+                checkRequest.setSsdIds(Collections.singletonList(ssdId));
+            }
+
+            String hddId = parts.getOrDefault("hdd", parts.get("HDD"));
+            if (hddId != null && !hddId.isBlank()) {
+                checkRequest.setHddIds(Collections.singletonList(hddId));
+            }
+
+            CompatibilityResult compatibilityResult = compatibilityService.checkCompatibility(checkRequest);
+            if (!compatibilityResult.isCompatible()) {
+                throw new AppException(ErrorCode.BUILD_INCOMPATIBLE);
+            }
+        }
 
         // Step 2: Create PcBuild entity
         PcBuild pcBuild = PcBuild.builder()
@@ -151,4 +189,3 @@ public class BuildService {
                 .build();
     }
 }
-
