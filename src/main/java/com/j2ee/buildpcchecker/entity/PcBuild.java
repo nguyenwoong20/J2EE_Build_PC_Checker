@@ -27,7 +27,6 @@ public class PcBuild {
     @Column(columnDefinition = "TEXT")
     String description;
 
-    Integer totalTdp;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
