@@ -20,6 +20,7 @@ public enum ErrorCode {
     EMAIL_NOT_VERIFIED(1011, "Email is not verified. Please verify your email first", HttpStatus.FORBIDDEN),
     EMAIL_ALREADY_VERIFIED(1012, "Email is already verified", HttpStatus.BAD_REQUEST),
     ACCOUNT_DISABLED(1013, "Account is disabled", HttpStatus.FORBIDDEN),
+    INVALID_OTP(1014, "Invalid or expired OTP", HttpStatus.BAD_REQUEST),
 
     // CPU validation errors (2001-2099)
     CPU_NAME_REQUIRED(2001, "CPU name is required", HttpStatus.BAD_REQUEST),

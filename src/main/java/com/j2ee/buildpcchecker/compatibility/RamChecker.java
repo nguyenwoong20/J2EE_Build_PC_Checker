@@ -21,7 +21,16 @@ import org.springframework.stereotype.Component;
 public class RamChecker {
 
     public void check(Ram ram, Mainboard mainboard, CompatibilityResult result) {
-        if (ram == null || mainboard == null) {
+        if (ram == null) {
+            return;
+        }
+
+        // RAM-only checks: chạy khi có RAM, không cần mainboard
+        checkSingleChannelWarning(ram, result);
+        checkRamBusSpeedWarning(ram, result);
+
+        // RAM + Mainboard checks: chỉ chạy khi có đủ cả 2
+        if (mainboard == null) {
             return;
         }
 
@@ -29,7 +38,6 @@ public class RamChecker {
         checkRamBus(ram, mainboard, result);
         checkRamSlot(ram, mainboard, result);
         checkRamCapacity(ram, mainboard, result);
-        checkSingleChannelWarning(ram, result);
     }
 
     private void checkRamType(Ram ram, Mainboard mainboard, CompatibilityResult result) {
@@ -77,6 +85,23 @@ public class RamChecker {
     private void checkSingleChannelWarning(Ram ram, CompatibilityResult result) {
         if (ram.getQuantity() == 1) {
             result.addWarning(CompatibilityMessages.WARNING_RAM_SINGLE_CHANNEL);
+        }
+    }
+
+    private void checkRamBusSpeedWarning(Ram ram, CompatibilityResult result) {
+        String ramTypeId = ram.getRamType().getId().toUpperCase();
+        int ramBus = ram.getRamBus();
+
+        if (ramTypeId.contains("DDR4") && ramBus < 3200) {
+            result.addWarning(String.format(
+                    CompatibilityMessages.WARNING_DDR4_BUS_TOO_LOW,
+                    ramBus
+            ));
+        } else if (ramTypeId.contains("DDR5") && ramBus < 5600) {
+            result.addWarning(String.format(
+                    CompatibilityMessages.WARNING_DDR5_BUS_TOO_LOW,
+                    ramBus
+            ));
         }
     }
 }

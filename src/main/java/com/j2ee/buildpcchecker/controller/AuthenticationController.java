@@ -8,6 +8,7 @@ import com.j2ee.buildpcchecker.dto.response.UserResponse;
 import com.j2ee.buildpcchecker.service.AuthenticationService;
 import com.j2ee.buildpcchecker.service.UserService;
 import com.nimbusds.jose.JOSEException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.MediaType;
@@ -351,7 +352,27 @@ public class AuthenticationController
         userService.resendVerificationEmail(email);
         return ApiResponse.<String>builder()
                 .result("Verification email has been sent to: " + email)
-                .message("Please check your email inbox and spam folder.")
+                .build();
+    }
+
+    // ========== FORGOT PASSWORD ==========
+
+    @PostMapping("/forgot-password")
+    ApiResponse<String> forgotPassword(@RequestBody @Valid ForgotPasswordRequest request)
+    {
+        authenticationService.forgotPassword(request);
+        return ApiResponse.<String>builder()
+                .result("OTP has been sent to: " + request.getEmail())
+                .build();
+    }
+
+    @PostMapping("/reset-password")
+    ApiResponse<String> resetPassword(@RequestBody @Valid ResetPasswordRequest request)
+    {
+        authenticationService.resetPassword(request);
+        return ApiResponse.<String>builder()
+                .result("Password reset successfully")
                 .build();
     }
 }
+

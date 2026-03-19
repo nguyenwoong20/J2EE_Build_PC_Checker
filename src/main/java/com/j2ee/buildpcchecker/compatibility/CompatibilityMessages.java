@@ -82,5 +82,11 @@ public final class CompatibilityMessages {
 
     public static final String WARNING_RAM_SINGLE_CHANNEL =
             "Chỉ có 1 thanh RAM - Khuyến nghị dùng 2 thanh để kích hoạt Dual Channel";
+
+    public static final String WARNING_DDR4_BUS_TOO_LOW =
+            "RAM DDR4 của bạn đang chạy ở bus %d MHz - Khuyến nghị chọn RAM bus 3200 MHz trở lên để tối ưu hiệu năng";
+
+    public static final String WARNING_DDR5_BUS_TOO_LOW =
+            "RAM DDR5 của bạn đang chạy ở bus %d MHz - Khuyến nghị chọn RAM bus 5600 MHz trở lên để tối ưu hiệu năng";
 }
 

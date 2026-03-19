@@ -23,7 +23,8 @@ public class SecurityConfig {
                         "/users",
                         "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh",
                         "/auth/verify-email", "/auth/resend-verification", "/builds/check-compatibility",
-                        "/builds/analyze"
+                        "/builds/analyze",
+                        "/auth/forgot-password", "/auth/reset-password"
         };
 
         private final String[] COMPONENT_ENDPOINTS = {
