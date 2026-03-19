@@ -5,8 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 
 @Getter
-public enum ErrorCode
-{
+public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
     INVALID_KEY(1001, "Invalid message key", HttpStatus.BAD_REQUEST),
     USER_EXISTED(1002, "User already exists", HttpStatus.BAD_REQUEST),
@@ -177,27 +176,44 @@ public enum ErrorCode
 
     // Data Integrity Violation errors (4001-4099)
     SOCKET_IN_USE_BY_CPU(4001, "Cannot delete Socket. There are CPUs using this Socket", HttpStatus.CONFLICT),
-    SOCKET_IN_USE_BY_MAINBOARD(4002, "Cannot delete Socket. There are Mainboards using this Socket", HttpStatus.CONFLICT),
-    RAM_TYPE_IN_USE_BY_RAM(4003, "Cannot delete RAM Type. There are RAM products using this RAM Type", HttpStatus.CONFLICT),
-    RAM_TYPE_IN_USE_BY_MAINBOARD(4004, "Cannot delete RAM Type. There are Mainboards using this RAM Type", HttpStatus.CONFLICT),
-    PCIE_VERSION_IN_USE_BY_CPU(4005, "Cannot delete PCIe Version. There are CPUs using this PCIe Version", HttpStatus.CONFLICT),
-    PCIE_VERSION_IN_USE_BY_MAINBOARD(4006, "Cannot delete PCIe Version. There are Mainboards using this PCIe Version", HttpStatus.CONFLICT),
-    PCIE_VERSION_IN_USE_BY_VGA(4007, "Cannot delete PCIe Version. There are VGAs using this PCIe Version", HttpStatus.CONFLICT),
+    SOCKET_IN_USE_BY_MAINBOARD(4002, "Cannot delete Socket. There are Mainboards using this Socket",
+            HttpStatus.CONFLICT),
+    RAM_TYPE_IN_USE_BY_RAM(4003, "Cannot delete RAM Type. There are RAM products using this RAM Type",
+            HttpStatus.CONFLICT),
+    RAM_TYPE_IN_USE_BY_MAINBOARD(4004, "Cannot delete RAM Type. There are Mainboards using this RAM Type",
+            HttpStatus.CONFLICT),
+    PCIE_VERSION_IN_USE_BY_CPU(4005, "Cannot delete PCIe Version. There are CPUs using this PCIe Version",
+            HttpStatus.CONFLICT),
+    PCIE_VERSION_IN_USE_BY_MAINBOARD(4006, "Cannot delete PCIe Version. There are Mainboards using this PCIe Version",
+            HttpStatus.CONFLICT),
+    PCIE_VERSION_IN_USE_BY_VGA(4007, "Cannot delete PCIe Version. There are VGAs using this PCIe Version",
+            HttpStatus.CONFLICT),
     SSD_TYPE_IN_USE(4008, "Cannot delete SSD Type. There are SSDs using this SSD Type", HttpStatus.CONFLICT),
-    INTERFACE_TYPE_IN_USE_BY_SSD(4009, "Cannot delete Interface Type. There are SSDs using this Interface Type", HttpStatus.CONFLICT),
-    INTERFACE_TYPE_IN_USE_BY_HDD(4010, "Cannot delete Interface Type. There are HDDs using this Interface Type", HttpStatus.CONFLICT),
-    FORM_FACTOR_IN_USE_BY_SSD(4011, "Cannot delete Form Factor. There are SSDs using this Form Factor", HttpStatus.CONFLICT),
-    FORM_FACTOR_IN_USE_BY_HDD(4012, "Cannot delete Form Factor. There are HDDs using this Form Factor", HttpStatus.CONFLICT),
-    COOLER_TYPE_IN_USE(4013, "Cannot delete Cooler Type. There are Coolers using this Cooler Type", HttpStatus.CONFLICT),
-    CASE_SIZE_IN_USE_BY_MAINBOARD(4014, "Cannot delete Case Size. There are Mainboards using this Case Size", HttpStatus.CONFLICT),
-    CASE_SIZE_IN_USE_BY_CASE(4015, "Cannot delete Case Size. There are Cases using this Case Size", HttpStatus.CONFLICT),
-    PCIE_CONNECTOR_IN_USE(4016, "Cannot delete PCIe Connector. There are PSUs using this PCIe Connector", HttpStatus.CONFLICT),
-    FOREIGN_KEY_VIOLATION(4099, "Cannot delete this entity. It is being referenced by other entities", HttpStatus.CONFLICT),
+    INTERFACE_TYPE_IN_USE_BY_SSD(4009, "Cannot delete Interface Type. There are SSDs using this Interface Type",
+            HttpStatus.CONFLICT),
+    INTERFACE_TYPE_IN_USE_BY_HDD(4010, "Cannot delete Interface Type. There are HDDs using this Interface Type",
+            HttpStatus.CONFLICT),
+    FORM_FACTOR_IN_USE_BY_SSD(4011, "Cannot delete Form Factor. There are SSDs using this Form Factor",
+            HttpStatus.CONFLICT),
+    FORM_FACTOR_IN_USE_BY_HDD(4012, "Cannot delete Form Factor. There are HDDs using this Form Factor",
+            HttpStatus.CONFLICT),
+    COOLER_TYPE_IN_USE(4013, "Cannot delete Cooler Type. There are Coolers using this Cooler Type",
+            HttpStatus.CONFLICT),
+    CASE_SIZE_IN_USE_BY_MAINBOARD(4014, "Cannot delete Case Size. There are Mainboards using this Case Size",
+            HttpStatus.CONFLICT),
+    CASE_SIZE_IN_USE_BY_CASE(4015, "Cannot delete Case Size. There are Cases using this Case Size",
+            HttpStatus.CONFLICT),
+    PCIE_CONNECTOR_IN_USE(4016, "Cannot delete PCIe Connector. There are PSUs using this PCIe Connector",
+            HttpStatus.CONFLICT),
+    FOREIGN_KEY_VIOLATION(4099, "Cannot delete this entity. It is being referenced by other entities",
+            HttpStatus.CONFLICT),
 
     // PC Build validation errors (5001-5099)
     BUILD_NAME_REQUIRED(5001, "Build name is required", HttpStatus.BAD_REQUEST),
     BUILD_NOT_FOUND(5002, "Build not found", HttpStatus.NOT_FOUND),
     BUILD_UNAUTHORIZED_ACCESS(5003, "You don't have permission to access this build", HttpStatus.FORBIDDEN),
+    BUILD_NAME_ALREADY_EXISTS(5004, "Build name already exists for this user", HttpStatus.BAD_REQUEST),
+    BUILD_INCOMPATIBLE(5005, "Build configuration is not compatible", HttpStatus.BAD_REQUEST),
 
     // Build Analysis errors (6001-6099)
     CPU_ID_REQUIRED(6001, "CPU ID is required", HttpStatus.BAD_REQUEST),
@@ -208,8 +224,7 @@ public enum ErrorCode
     // File storage errors (6101-6199)
     FILE_EMPTY(6101, "File is empty", HttpStatus.BAD_REQUEST),
     FILE_INVALID_NAME(6102, "File name or entity is invalid", HttpStatus.BAD_REQUEST),
-    FILE_STORAGE_ERROR(6103, "Failed to store file", HttpStatus.INTERNAL_SERVER_ERROR)
-    ;
+    FILE_STORAGE_ERROR(6103, "Failed to store file", HttpStatus.INTERNAL_SERVER_ERROR);
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;
@@ -220,6 +235,5 @@ public enum ErrorCode
     private int code;
     private String message;
     private HttpStatusCode statusCode;
-
 
 }

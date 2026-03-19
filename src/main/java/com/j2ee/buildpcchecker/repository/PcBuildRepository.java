@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface PcBuildRepository extends JpaRepository<PcBuild, String> {
     List<PcBuild> findByUserId(String userId);
-}
 
+    boolean existsByUserIdAndName(String userId, String name);
+}
