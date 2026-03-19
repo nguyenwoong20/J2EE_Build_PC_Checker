@@ -48,6 +48,26 @@ public class EmailService
         }
     }
 
+    public void sendOtpEmail(String toEmail, String otp) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom(fromEmail);
+            helper.setTo(toEmail);
+            helper.setSubject("Mã OTP Đặt Lại Mật Khẩu - Build PC Checker");
+
+            String htmlContent = buildOtpEmailTemplate(otp);
+            helper.setText(htmlContent, true);
+
+            mailSender.send(message);
+            log.info("OTP email sent to: {}", toEmail);
+        } catch (MessagingException e) {
+            log.error("Failed to send OTP email to: {} - Error: {}", toEmail, e.getMessage());
+            throw new RuntimeException("Failed to send OTP email", e);
+        }
+    }
+
     private String buildEmailTemplate(String verificationLink)
     {
         return """
@@ -243,7 +263,121 @@ public class EmailService
                 </html>
                 """.formatted(verificationLink, verificationLink);
     }
+
+    private String buildOtpEmailTemplate(String otp) {
+        return """
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <style>
+                        * { margin: 0; padding: 0; box-sizing: border-box; }
+                        body {
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                            line-height: 1.6;
+                            color: #333;
+                            background: linear-gradient(135deg, #667eea 0%%, #764ba2 100%%);
+                            padding: 40px 20px;
+                        }
+                        .container {
+                            max-width: 600px;
+                            margin: 0 auto;
+                            background-color: #ffffff;
+                            border-radius: 16px;
+                            overflow: hidden;
+                            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+                        }
+                        .header {
+                            background: linear-gradient(135deg, #667eea 0%%, #764ba2 100%%);
+                            padding: 40px 30px;
+                            text-align: center;
+                            color: white;
+                        }
+                        .header h1 { font-size: 26px; margin-bottom: 8px; font-weight: 600; }
+                        .header p { font-size: 15px; opacity: 0.9; }
+                        .content { padding: 40px 30px; background-color: #ffffff; }
+                        .content p { margin-bottom: 15px; color: #555; font-size: 16px; }
+                        .otp-box {
+                            background: linear-gradient(135deg, #f0f4ff, #e8edff);
+                            border: 2px dashed #667eea;
+                            border-radius: 12px;
+                            text-align: center;
+                            padding: 28px 20px;
+                            margin: 28px 0;
+                        }
+                        .otp-label {
+                            font-size: 13px;
+                            color: #888;
+                            text-transform: uppercase;
+                            letter-spacing: 2px;
+                            margin-bottom: 12px;
+                        }
+                        .otp-code {
+                            font-size: 52px;
+                            font-weight: 800;
+                            letter-spacing: 14px;
+                            color: #667eea;
+                            font-family: 'Courier New', monospace;
+                        }
+                        .warning-box {
+                            background-color: #fff3cd;
+                            border-left: 4px solid #ffc107;
+                            padding: 15px;
+                            border-radius: 8px;
+                            margin: 20px 0;
+                        }
+                        .warning-box p { color: #856404; margin: 0; font-size: 14px; }
+                        .info-box {
+                            background-color: #e7f3ff;
+                            border-left: 4px solid #2196F3;
+                            padding: 15px;
+                            border-radius: 8px;
+                            margin: 20px 0;
+                        }
+                        .info-box p { color: #0c5460; margin: 0; font-size: 14px; }
+                        .footer {
+                            background-color: #f8f9fa;
+                            text-align: center;
+                            padding: 28px 30px;
+                            border-top: 1px solid #e9ecef;
+                        }
+                        .footer p { font-size: 13px; color: #6c757d; margin: 4px 0; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <h1>🔐 Đặt Lại Mật Khẩu</h1>
+                            <p>Build PC Checker</p>
+                        </div>
+                        <div class="content">
+                            <p>Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn.</p>
+                            <p>Sử dụng mã OTP dưới đây để hoàn tất quá trình đặt lại mật khẩu:</p>
+                            <div class="otp-box">
+                                <div class="otp-label">Mã xác thực OTP</div>
+                                <div class="otp-code">%s</div>
+                            </div>
+                            <div class="warning-box">
+                                <p>⏰ <strong>Mã OTP có hiệu lực trong 5 phút.</strong> Không chia sẻ mã này với bất kỳ ai.</p>
+                            </div>
+                            <div class="info-box">
+                                <p>📌 Nhập mã OTP này cùng với email và mật khẩu mới vào ứng dụng để hoàn tất đặt lại mật khẩu.</p>
+                            </div>
+                            <p style="margin-top: 20px; font-size: 14px; color: #888;">Nếu bạn không yêu cầu đặt lại mật khẩu, hãy bỏ qua email này. Tài khoản của bạn vẫn an toàn.</p>
+                        </div>
+                        <div class="footer">
+                            <p><strong>Build PC Checker</strong></p>
+                            <p>Hệ thống kiểm tra tương thích linh kiện PC</p>
+                            <p style="margin-top: 12px;">&copy; 2026 Build PC Checker. All rights reserved.</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+                """.formatted(otp);
+    }
 }
+
 
 
 
