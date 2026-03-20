@@ -38,6 +38,9 @@ public class Vga {
     @Column(nullable = false)
     Integer score;
 
+    @Column(name = "vram_gb")
+    Integer vramGb;
+
     @Column(name = "image_url", columnDefinition = "TEXT")
     String imageUrl;
 

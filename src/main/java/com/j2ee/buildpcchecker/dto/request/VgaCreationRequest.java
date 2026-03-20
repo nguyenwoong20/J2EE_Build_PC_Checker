@@ -29,6 +29,7 @@ public class VgaCreationRequest {
     @NotNull(message = "VGA_SCORE_REQUIRED")
     Integer score;
 
+    Integer vramGb;
     String imageUrl;
 
     String description;

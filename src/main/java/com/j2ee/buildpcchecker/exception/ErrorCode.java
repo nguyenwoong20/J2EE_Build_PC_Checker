@@ -209,6 +209,29 @@ public enum ErrorCode
     FILE_EMPTY(6101, "File is empty", HttpStatus.BAD_REQUEST),
     FILE_INVALID_NAME(6102, "File name or entity is invalid", HttpStatus.BAD_REQUEST),
     FILE_STORAGE_ERROR(6103, "Failed to store file", HttpStatus.INTERNAL_SERVER_ERROR)
+    ,
+
+    // Game validation errors (3201-3299)
+    GAME_NAME_REQUIRED(3201, "Game name is required", HttpStatus.BAD_REQUEST),
+    GAME_NAME_ALREADY_EXISTS(3202, "Game name already exists", HttpStatus.BAD_REQUEST),
+    GAME_NOT_FOUND(3203, "Game not found", HttpStatus.NOT_FOUND),
+    GAME_MIN_CPU_SCORE_INVALID(3204, "Min CPU score must be positive", HttpStatus.BAD_REQUEST),
+    GAME_MIN_GPU_SCORE_INVALID(3205, "Min GPU score must be positive", HttpStatus.BAD_REQUEST),
+    GAME_REC_CPU_SCORE_INVALID(3206, "Recommended CPU score must be positive", HttpStatus.BAD_REQUEST),
+    GAME_REC_GPU_SCORE_INVALID(3207, "Recommended GPU score must be positive", HttpStatus.BAD_REQUEST),
+    GAME_MIN_RAM_GB_INVALID(3208, "Min RAM (GB) must be positive", HttpStatus.BAD_REQUEST),
+    GAME_REC_RAM_GB_INVALID(3209, "Recommended RAM (GB) must be positive", HttpStatus.BAD_REQUEST),
+    GAME_BASE_FPS_LOW_INVALID(3210, "Base FPS Low must be positive", HttpStatus.BAD_REQUEST),
+    GAME_BASE_FPS_MEDIUM_INVALID(3211, "Base FPS Medium must be positive", HttpStatus.BAD_REQUEST),
+    GAME_BASE_FPS_HIGH_INVALID(3212, "Base FPS High must be positive", HttpStatus.BAD_REQUEST),
+    GAME_MIN_STORAGE_GB_INVALID(3213, "Min storage (GB) must be positive", HttpStatus.BAD_REQUEST),
+    GAME_MIN_VRAM_GB_INVALID(3214, "Min VRAM (GB) must be positive", HttpStatus.BAD_REQUEST),
+    GAME_REC_STORAGE_GB_INVALID(3215, "Recommended storage (GB) must be positive", HttpStatus.BAD_REQUEST),
+    GAME_REC_VRAM_GB_INVALID(3216, "Recommended VRAM (GB) must be positive", HttpStatus.BAD_REQUEST),
+
+    // FPS estimation validation errors (3301-3399)
+    RESOLUTION_REQUIRED(3301, "Resolution is required", HttpStatus.BAD_REQUEST),
+    RESOLUTION_INVALID(3302, "Resolution must be one of: 1080p, 2k, 4k", HttpStatus.BAD_REQUEST)
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

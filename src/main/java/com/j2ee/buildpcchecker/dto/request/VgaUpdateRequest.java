@@ -16,6 +16,7 @@ public class VgaUpdateRequest {
     String pcieVersionId;
     String powerConnectorId;
     Integer score;
+    Integer vramGb;
     String imageUrl;
     String description;
 }

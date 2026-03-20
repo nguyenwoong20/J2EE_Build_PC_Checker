@@ -17,6 +17,7 @@ public class VgaResponse {
     PcieVersionResponse pcieVersion;
     PcieConnectorResponse powerConnector;
     Integer score;
+    Integer vramGb;
     String imageUrl;
     String description;
 }
