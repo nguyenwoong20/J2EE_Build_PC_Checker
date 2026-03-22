@@ -37,9 +37,9 @@ public class BuildAnalyzerService {
     private static final String RES_4K    = "4k";
 
     // Resolution weights: higher resolution → GPU works harder → CPU appears less of a bottleneck
-    private static final double WEIGHT_1080P = 1.2;
+    private static final double WEIGHT_1080P = 1.1;
     private static final double WEIGHT_2K    = 1.0;
-    private static final double WEIGHT_4K    = 0.8;
+    private static final double WEIGHT_4K    = 0.9;
 
     CpuRepository cpuRepository;
     VgaRepository vgaRepository;
@@ -72,7 +72,7 @@ public class BuildAnalyzerService {
         log.debug("CPU Score: {}, GPU Score: {}", cpuScore, gpuScore);
 
         // Base ratio: ratio < 1 → CPU bottleneck, ratio > 1 → GPU bottleneck
-        double baseRatio = (double) cpuScore / gpuScore;
+        double baseRatio = (cpuScore * 0.7d) / gpuScore;
         log.debug("Base ratio: {}", baseRatio);
 
         // Calculate results for each resolution
@@ -109,18 +109,18 @@ public class BuildAnalyzerService {
         boolean hasBottleneck;
         String message;
 
-        if (adjustedRatio < 0.9) {
+        if (adjustedRatio < 0.95) {
             // CPU is the bottleneck
             type = "CPU";
             hasBottleneck = true;
 
-            if (adjustedRatio < 0.5) {
+            if (adjustedRatio < 0.75) {
                 severity = "HIGH";
                 message = String.format(
                         "CPU %s sẽ trở thành điểm nghẽn đáng kể cho %s ở độ phân giải %s. " +
                         "Nên nâng cấp CPU để khai thác tối đa hiệu năng GPU.",
                         cpuName, gpuName, resolution);
-            } else if (adjustedRatio < 0.7) {
+            } else if (adjustedRatio < 0.85) {
                 severity = "MEDIUM";
                 message = String.format(
                         "CPU %s có thể giới hạn hiệu năng của %s khi chơi game ở độ phân giải %s.",
@@ -133,39 +133,39 @@ public class BuildAnalyzerService {
                         cpuName, gpuName, resolution);
             }
 
-        } else if (adjustedRatio > 1.1) {
-            // GPU is the bottleneck
-            type = "GPU";
-            hasBottleneck = true;
-
-            if (adjustedRatio > 1.6) {
-                severity = "HIGH";
-                message = String.format(
-                        "GPU %s sẽ trở thành điểm nghẽn đáng kể cho %s ở độ phân giải %s. " +
-                        "Nên nâng cấp GPU để cải thiện hiệu năng.",
-                        gpuName, cpuName, resolution);
-            } else if (adjustedRatio > 1.3) {
-                severity = "MEDIUM";
-                message = String.format(
-                        "GPU %s có thể giới hạn hiệu năng tổng thể với CPU %s ở độ phân giải %s.",
-                        gpuName, cpuName, resolution);
-            } else {
-                severity = "LOW";
-                message = String.format(
-                        "GPU %s có bottleneck nhẹ với CPU %s ở độ phân giải %s. " +
-                        "Hiệu năng vẫn chấp nhận được.",
-                        gpuName, cpuName, resolution);
-            }
-
-        } else {
-            // Balanced
-            type = "NONE";
+        } else if (adjustedRatio <= 1.10) {
+            // Balanced (per spec: Type CPU, Severity NONE)
+            type = "CPU";
             severity = "NONE";
             hasBottleneck = false;
             message = String.format(
                     "CPU %s và GPU %s được cân bằng tốt ở độ phân giải %s. " +
                     "Không có bottleneck đáng kể.",
                     cpuName, gpuName, resolution);
+
+        } else {
+            // GPU is the bottleneck
+            type = "GPU";
+            hasBottleneck = true;
+
+            if (adjustedRatio <= 1.40) {
+                severity = "LOW";
+                message = String.format(
+                        "GPU %s có bottleneck nhẹ với CPU %s ở độ phân giải %s. " +
+                        "Hiệu năng vẫn chấp nhận được.",
+                        gpuName, cpuName, resolution);
+            } else if (adjustedRatio <= 1.80) {
+                severity = "MEDIUM";
+                message = String.format(
+                        "GPU %s có thể giới hạn hiệu năng tổng thể với CPU %s ở độ phân giải %s.",
+                        gpuName, cpuName, resolution);
+            } else {
+                severity = "HIGH";
+                message = String.format(
+                        "GPU %s sẽ trở thành điểm nghẽn đáng kể cho %s ở độ phân giải %s. " +
+                        "Nên nâng cấp GPU để cải thiện hiệu năng.",
+                        gpuName, cpuName, resolution);
+            }
         }
 
         log.debug("Resolution {} - ratio: {}, type: {}, severity: {}", resolution, roundedRatio, type, severity);
