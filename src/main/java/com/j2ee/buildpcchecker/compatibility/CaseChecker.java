@@ -31,7 +31,6 @@ public class CaseChecker {
         checkVgaLength(pcCase, vga, result);
         checkPcieVersion(mainboard, vga, result);
         checkIgpu(cpu, vga, result);
-        checkBottleneck(cpu, vga, result);
     }
 
     private void checkCaseSize(PcCase pcCase, Mainboard mainboard, CompatibilityResult result) {
@@ -116,25 +115,6 @@ public class CaseChecker {
 
         if (vga == null && !cpu.getIgpu()) {
             result.addWarning(CompatibilityMessages.WARNING_NO_VGA_NO_IGPU);
-        }
-    }
-
-    private void checkBottleneck(Cpu cpu, Vga vga, CompatibilityResult result) {
-        if (cpu == null || vga == null) {
-            return;
-        }
-
-        int cpuScore = cpu.getScore();
-        int vgaScore = vga.getScore();
-
-        double diff = Math.abs(cpuScore - vgaScore) / (double) Math.max(cpuScore, vgaScore);
-
-        if (diff > 0.4) { // > 40% difference
-            result.addWarning(String.format(
-                    CompatibilityMessages.WARNING_CPU_VGA_BOTTLENECK,
-                    cpuScore,
-                    vgaScore
-            ));
         }
     }
 }
