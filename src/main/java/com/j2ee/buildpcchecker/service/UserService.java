@@ -82,7 +82,7 @@ public class UserService
         return userMapper.toUserResponse(user);
     }
 
-    @PostAuthorize("returnObject.email == authentication.name")
+    @PreAuthorize("hasRole('ADMIN') or returnObject.email == authentication.name")
     public UserResponse getUserById(String userId)
     {
         log.info("In method get user ID");

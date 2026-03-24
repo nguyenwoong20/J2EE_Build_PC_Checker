@@ -20,9 +20,8 @@ public class UserUpdateRequest
     String username;
     String firstname;
     String lastname;
-    String email;
 
-    @DateOfBirthConstraint(min = 18, message = "INVALID_DATE_OF_BIRTH")
+    @DateOfBirthConstraint(min = 5, message = "INVALID_DATE_OF_BIRTH")
     LocalDate dateOfBirth;
     List<String> roles;
 }
