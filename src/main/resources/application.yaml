@@ -7,9 +7,10 @@ spring:
   application:
     name: buildpcchecker
   datasource:
-    url: jdbc:mysql://localhost:3306/identity_service
-    username: root
-    password: 123456
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -18,7 +19,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: lookatwidget@gmail.com  # Thay bằng email của bạn
-    password: yygjtzpdjueh msmr      # Thay bằng App Password của Gmail
+    password: ${MAIL_PASSWORD}      # Thay bằng App Password của Gmail
     properties:
       mail:
         smtp:
@@ -38,7 +39,7 @@ app:
     dev-url: http://localhost:8080
 
 jwt:
-  signerKey: "ef251fc07ebf85497bf3b3e3c558386a22756bacb907d9e08d345bfe269ede05"
+  signerKey: ${JWT_SIGNER_KEY}
   valid-duration: 300 # in seconds
   refreshable-duration: 1200 # seconds
 
