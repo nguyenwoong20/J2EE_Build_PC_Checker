@@ -34,6 +34,11 @@ app:
   base-url: http://localhost:8080/identity  # URL base của ứng dụng
   file:
     upload-dir: ${user.dir}/uploads/images
+  cloudinary:
+    cloud-name: ${CLOUDINARY_CLOUD_NAME}
+    api-key: ${CLOUDINARY_API_KEY}
+    api-secret: ${CLOUDINARY_API_SECRET}
+    folder: ${CLOUDINARY_FOLDER:buildpcchecker}
   openapi:
     dev-url: http://localhost:8080
 
