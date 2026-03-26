@@ -1,29 +1,32 @@
 package com.j2ee.buildpcchecker.service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.Uploader;
 import com.j2ee.buildpcchecker.exception.AppException;
 import com.j2ee.buildpcchecker.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
+@Slf4j
 public class FileStorageService {
 
-    @Value("${app.file.upload-dir:${user.dir}/uploads/images}")
-    String uploadDir;
+    final Cloudinary cloudinary;
+
+    @Value("${app.cloudinary.folder}")
+    String cloudinaryFolder;
 
     public String storeFile(MultipartFile file) {
         return storeFile(file, "image");
@@ -35,35 +38,28 @@ public class FileStorageService {
         }
 
         String safeEntity = normalizeEntity(entity);
-        String originalName = StringUtils.cleanPath(StringUtils.hasText(file.getOriginalFilename())
-                ? file.getOriginalFilename()
-                : "");
+        String folder = normalizeFolder(cloudinaryFolder);
+        String fullFolder = folder.isEmpty() ? safeEntity : folder + "/" + safeEntity;
+        String publicId = safeEntity + "-" + UUID.randomUUID();
 
-        String extension = extractExtension(originalName);
-        String filename = safeEntity + "-" + UUID.randomUUID();
-        if (StringUtils.hasText(extension)) {
-            filename = filename + "." + extension;
-        }
+        Map<String, Object> options = new HashMap<>();
+        options.put("public_id", publicId);
+        options.put("folder", fullFolder);
+        options.put("resource_type", "image");
 
-        Path targetDir = Paths.get(uploadDir).toAbsolutePath().normalize();
         try {
-            Files.createDirectories(targetDir);
+            Uploader uploader = cloudinary.uploader();
+            Map<?, ?> uploadResult = uploader.upload(file.getBytes(), options);
+            String secureUrl = (String) uploadResult.get("secure_url");
+            if (!StringUtils.hasText(secureUrl)) {
+                log.error("Cloudinary upload succeeded without secure_url. Result keys: {}", uploadResult.keySet());
+                throw new AppException(ErrorCode.FILE_STORAGE_ERROR);
+            }
+            return secureUrl;
         } catch (IOException e) {
+            log.error("Cloudinary upload failed: {}", e.getMessage(), e);
             throw new AppException(ErrorCode.FILE_STORAGE_ERROR);
         }
-
-        Path targetPath = targetDir.resolve(filename).normalize();
-        if (!targetPath.startsWith(targetDir)) {
-            throw new AppException(ErrorCode.FILE_INVALID_NAME);
-        }
-
-        try (InputStream inputStream = file.getInputStream()) {
-            Files.copy(inputStream, targetPath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            throw new AppException(ErrorCode.FILE_STORAGE_ERROR);
-        }
-
-        return filename;
     }
 
     private String normalizeEntity(String entity) {
@@ -79,12 +75,18 @@ public class FileStorageService {
         return normalized;
     }
 
-    private String extractExtension(String originalName) {
-        int lastDotIndex = originalName.lastIndexOf('.');
-        if (lastDotIndex <= 0 || lastDotIndex == originalName.length() - 1) {
+    private String normalizeFolder(String folder) {
+        if (!StringUtils.hasText(folder)) {
             return "";
         }
 
-        return originalName.substring(lastDotIndex + 1);
+        String normalized = folder.trim();
+        if (!normalized.matches("[A-Za-z0-9/_-]+")) {
+            throw new AppException(ErrorCode.FILE_INVALID_NAME);
+        }
+
+        normalized = normalized.replaceAll("^/+", "");
+        normalized = normalized.replaceAll("/+$", "");
+        return normalized;
     }
 }
