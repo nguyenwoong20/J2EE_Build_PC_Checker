@@ -13,7 +13,12 @@ import java.util.Map;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BuildPerformanceDto {
     double totalScore;
+    double gamingScore;
+    double workstationScore;
     String tier;
+    String tierGrade; // S, A, B, C, D, E
+    String bottleneck;
+    String summary;
     Map<String, Double> breakdown;
     Map<String, Double> radarChartData;
     List<GameCompatibilityResult> gameCompatibility;

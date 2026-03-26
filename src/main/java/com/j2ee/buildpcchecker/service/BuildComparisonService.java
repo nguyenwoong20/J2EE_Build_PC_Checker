@@ -37,7 +37,7 @@ public class BuildComparisonService {
                 .psu(comparePsu(build1, build2))
                 .build();
 
-        result.setOverallWinner(calculateOverallWinner(result));
+        result.setOverallWinner(calculateOverallWinner(result, build1, build2));
         return result;
     }
 
@@ -48,12 +48,19 @@ public class BuildComparisonService {
         ComponentInfo info1 = cpu1 != null ? ComponentInfo.builder().name(cpu1.getName()).score(cpu1.getScore()).build() : null;
         ComponentInfo info2 = cpu2 != null ? ComponentInfo.builder().name(cpu2.getName()).score(cpu2.getScore()).build() : null;
 
-        String winner = "equal";
+        String winner;
         if (info1 != null && info2 != null) {
             if (info1.getScore() > info2.getScore()) winner = "build1";
             else if (info2.getScore() > info1.getScore()) winner = "build2";
+            else {
+                // Tie breaker: Efficiency (Lower TDP is better)
+                if (cpu1.getTdp() < cpu2.getTdp()) winner = "build1";
+                else if (cpu2.getTdp() < cpu1.getTdp()) winner = "build2";
+                else winner = "equal"; // Identical
+            }
         } else if (info1 != null) winner = "build1";
         else if (info2 != null) winner = "build2";
+        else winner = "equal"; // Both null
 
         return ComponentComparison.<ComponentInfo>builder()
                 .build1(info1).build2(info2).winner(winner).build();
@@ -68,19 +75,26 @@ public class BuildComparisonService {
         BuildComparisonResultDto.GpuComparisonInfo info2 = vga2 != null ? BuildComparisonResultDto.GpuComparisonInfo.builder()
                 .name(vga2.getName()).score(vga2.getScore()).vramGb(vga2.getVramGb()).build() : null;
 
-        String winner = "equal";
+        String winner;
         if (info1 != null && info2 != null) {
             if (Math.abs(info1.getScore() - info2.getScore()) < 500) {
                 if (info1.getVramGb() > info2.getVramGb()) winner = "build1";
                 else if (info2.getVramGb() > info1.getVramGb()) winner = "build2";
                 else if (info1.getScore() > info2.getScore()) winner = "build1";
                 else if (info2.getScore() > info1.getScore()) winner = "build2";
+                else {
+                    // Tie breaker: Efficiency
+                    if (vga1.getTdp() < vga2.getTdp()) winner = "build1";
+                    else if (vga2.getTdp() < vga1.getTdp()) winner = "build2";
+                    else winner = "equal";
+                }
             } else {
                 if (info1.getScore() > info2.getScore()) winner = "build1";
-                else if (info2.getScore() > info1.getScore()) winner = "build2";
+                else winner = "build2";
             }
         } else if (info1 != null) winner = "build1";
         else if (info2 != null) winner = "build2";
+        else winner = "equal";
 
         return ComponentComparison.<BuildComparisonResultDto.GpuComparisonInfo>builder()
                 .build1(info1).build2(info2).winner(winner).build();
@@ -95,7 +109,7 @@ public class BuildComparisonService {
         BuildComparisonResultDto.RamComparisonInfo info2 = ram2 != null ? BuildComparisonResultDto.RamComparisonInfo.builder()
                 .name(ram2.getName()).totalGb(ram2.getCapacityPerStick() * ram2.getQuantity()).bus(ram2.getRamBus()).cas(ram2.getRamCas()).build() : null;
 
-        String winner = "equal";
+        String winner;
         if (info1 != null && info2 != null) {
             if (info1.getTotalGb() > info2.getTotalGb()) winner = "build1";
             else if (info2.getTotalGb() > info1.getTotalGb()) winner = "build2";
@@ -103,8 +117,15 @@ public class BuildComparisonService {
             else if (info2.getBus() > info1.getBus()) winner = "build2";
             else if (info1.getCas() < info2.getCas()) winner = "build1";
             else if (info2.getCas() < info1.getCas()) winner = "build2";
+            else {
+                // Tie breaker: Efficiency
+                if (ram1.getTdp() < ram2.getTdp()) winner = "build1";
+                else if (ram2.getTdp() < ram1.getTdp()) winner = "build2";
+                else winner = "equal";
+            }
         } else if (info1 != null) winner = "build1";
         else if (info2 != null) winner = "build2";
+        else winner = "equal";
 
         return ComponentComparison.<BuildComparisonResultDto.RamComparisonInfo>builder()
                 .build1(info1).build2(info2).winner(winner).build();
@@ -127,7 +148,7 @@ public class BuildComparisonService {
         BuildComparisonResultDto.StorageComparisonInfo info2 = BuildComparisonResultDto.StorageComparisonInfo.builder()
                 .name("Storage Build 2").type(type2).totalCapacity(cap2).build();
 
-        String winner = "equal";
+        String winner;
         int rank1 = getStorageRank(type1);
         int rank2 = getStorageRank(type2);
 
@@ -135,6 +156,12 @@ public class BuildComparisonService {
         else if (rank2 > rank1) winner = "build2";
         else if (cap1 > cap2) winner = "build1";
         else if (cap2 > cap1) winner = "build2";
+        else {
+            // Tie breaker: Prefer build with more SSDs
+            if (ssds1.size() > ssds2.size()) winner = "build1";
+            else if (ssds2.size() > ssds1.size()) winner = "build2";
+            else winner = "equal";
+        }
 
         return ComponentComparison.<BuildComparisonResultDto.StorageComparisonInfo>builder()
                 .build1(info1).build2(info2).winner(winner).build();
@@ -177,7 +204,7 @@ public class BuildComparisonService {
                 .isSafe(res2.isCompatible() && psu2 != null && psu2.getWattage() >= res2.getRecommendedPsuWattage())
                 .build();
 
-        String winner = "equal";
+        String winner;
         if (info1.isSafe() && !info2.isSafe()) winner = "build1";
         else if (!info1.isSafe() && info2.isSafe()) winner = "build2";
         else if (info1.isSafe() && info2.isSafe()) {
@@ -185,13 +212,21 @@ public class BuildComparisonService {
             double margin2 = (double) info2.getActualWattage() / info2.getRecommendedWattage();
             if (margin1 > margin2) winner = "build1";
             else if (margin2 > margin1) winner = "build2";
+            else winner = "equal";
+        } else {
+            // Both unsafe, but which one is less bad?
+            double margin1 = (double) info1.getActualWattage() / info1.getRecommendedWattage();
+            double margin2 = (double) info2.getActualWattage() / info2.getRecommendedWattage();
+            if (margin1 > margin2) winner = "build1";
+            else if (margin2 > margin1) winner = "build2";
+            else winner = "equal";
         }
 
         return ComponentComparison.<BuildComparisonResultDto.PsuComparisonInfo>builder()
                 .build1(info1).build2(info2).winner(winner).build();
     }
 
-    private String calculateOverallWinner(BuildComparisonResultDto result) {
+    private String calculateOverallWinner(BuildComparisonResultDto result, BuildCheckRequest b1Req, BuildCheckRequest b2Req) {
         int b1 = 0, b2 = 0;
         if (result.getCpu().getWinner().equals("build1")) b1++; else if (result.getCpu().getWinner().equals("build2")) b2++;
         if (result.getGpu().getWinner().equals("build1")) b1++; else if (result.getGpu().getWinner().equals("build2")) b2++;
@@ -201,6 +236,47 @@ public class BuildComparisonService {
 
         if (b1 > b2) return "build1";
         if (b2 > b1) return "build2";
-        return "equal";
+
+        // Tie breaker 1: Aggregate CPU + GPU score (Primary performance indicator)
+        int score1 = 0, score2 = 0;
+        Cpu cpu1 = b1Req.getCpuId() != null ? cpuRepository.findById(b1Req.getCpuId()).orElse(null) : null;
+        Cpu cpu2 = b2Req.getCpuId() != null ? cpuRepository.findById(b2Req.getCpuId()).orElse(null) : null;
+        Vga vga1 = b1Req.getVgaId() != null ? vgaRepository.findById(b1Req.getVgaId()).orElse(null) : null;
+        Vga vga2 = b2Req.getVgaId() != null ? vgaRepository.findById(b2Req.getVgaId()).orElse(null) : null;
+
+        if (cpu1 != null) score1 += cpu1.getScore();
+        if (vga1 != null) score1 += vga1.getScore();
+        if (cpu2 != null) score2 += cpu2.getScore();
+        if (vga2 != null) score2 += vga2.getScore();
+
+        if (score1 > score2) return "build1";
+        if (score2 > score1) return "build2";
+
+        // Tie breaker 2: Power Efficiency (Lower TDP is better if performance is identical)
+        int tdp1 = (cpu1 != null ? cpu1.getTdp() : 0) + (vga1 != null ? vga1.getTdp() : 0);
+        int tdp2 = (cpu2 != null ? cpu2.getTdp() : 0) + (vga2 != null ? vga2.getTdp() : 0);
+        if (tdp1 < tdp2) return "build1";
+        if (tdp2 < tdp1) return "build2";
+
+        // Tie breaker 3: RAM Capacity
+        int ram1 = result.getRam().getBuild1() != null ? result.getRam().getBuild1().getTotalGb() : 0;
+        int ram2 = result.getRam().getBuild2() != null ? result.getRam().getBuild2().getTotalGb() : 0;
+        if (ram1 > ram2) return "build1";
+        if (ram2 > ram1) return "build2";
+
+        // Tie breaker 4: Storage Capacity
+        int storage1 = result.getStorage().getBuild1() != null ? result.getStorage().getBuild1().getTotalCapacity() : 0;
+        int storage2 = result.getStorage().getBuild2() != null ? result.getStorage().getBuild2().getTotalCapacity() : 0;
+        if (storage1 > storage2) return "build1";
+        if (storage2 > storage1) return "build2";
+
+        // Final fail-safe: Compare by name alphabetically
+        String name1 = (cpu1 != null ? cpu1.getName() : "") + (vga1 != null ? vga1.getName() : "");
+        String name2 = (cpu2 != null ? cpu2.getName() : "") + (vga2 != null ? vga2.getName() : "");
+        int nameComp = name1.compareToIgnoreCase(name2);
+        if (nameComp < 0) return "build1";
+        if (nameComp > 0) return "build2";
+
+        return "equal"; // Truly identical computers
     }
 }
